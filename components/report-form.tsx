@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,23 +13,98 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { MapPin, AlertTriangle, Star, X, Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { db } from "@/lib/firebase"
+import { collection, addDoc, serverTimestamp, getDocs } from "firebase/firestore"
 
 export function ReportForm() {
   const [reportType, setReportType] = useState<"issue" | "review" | "">("")
   const [photos, setPhotos] = useState<string[]>([])
   const [rating, setRating] = useState(0)
+  const [cities, setCities] = useState<{ id: string; name: string }[]>([])
+  const [selectedLocation, setSelectedLocation] = useState<string>("")
+
+  // Нові стани для полів форми
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [category, setCategory] = useState("")
+  const [priority, setPriority] = useState("")
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [sendUpdates, setSendUpdates] = useState(false)
+
   const { toast } = useToast()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchCities = async () => {
+      const citiesCollectionRef = collection(db, "cities")
+      const citySnapshot = await getDocs(citiesCollectionRef)
+      const cityList = citySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name,
+      }))
+      setCities(cityList)
+    }
+
+    fetchCities()
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    toast({
-      title: "Report Submitted!",
-      description: "Thank you for helping improve our city. We'll review your report soon.",
-    })
+
+    if (!reportType || !title || !description || !selectedLocation || !category) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const newReport = {
+      type: reportType,
+      title,
+      description,
+      location: selectedLocation,
+      category,
+      priority: reportType === "issue" ? priority : null,
+      rating: reportType === "review" ? rating : null,
+      photos,
+      contact: {
+        name,
+        email,
+        sendUpdates,
+      },
+      createdAt: serverTimestamp(),
+    }
+
+    try {
+      await addDoc(collection(db, "reports"), newReport)
+      toast({
+        title: "Report Submitted!",
+        description: "Thank you for helping improve our city.",
+      })
+      // Очистка форми після успішної відправки
+      setReportType("")
+      setPhotos([])
+      setRating(0)
+      setSelectedLocation("")
+      setTitle("")
+      setDescription("")
+      setCategory("")
+      setPriority("")
+      setName("")
+      setEmail("")
+      setSendUpdates(false)
+    } catch (error) {
+      toast({
+        title: "Submission failed",
+        description: "Please try again later.",
+        variant: "destructive",
+      })
+    }
   }
 
   const addPhoto = () => {
-    // Mock photo upload
     setPhotos([...photos, `/placeholder.svg?height=100&width=100&text=Photo${photos.length + 1}`])
   }
 
@@ -47,7 +122,7 @@ export function ReportForm() {
           {/* Report Type */}
           <div className="space-y-3">
             <Label className="text-base font-medium">What would you like to report?</Label>
-            <RadioGroup value={reportType} onValueChange={(value) => setReportType(value as "issue" | "review")}>
+            <RadioGroup value={reportType} onValueChange={(value) => setReportType(value as "issue" | "review" | "")}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="issue" id="issue" />
                 <Label htmlFor="issue" className="flex items-center gap-2">
@@ -76,6 +151,8 @@ export function ReportForm() {
                     reportType === "issue" ? "Brief description of the issue" : "What's great about this place?"
                   }
                   required
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
 
@@ -84,7 +161,18 @@ export function ReportForm() {
                 <Label htmlFor="location">Location *</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input id="location" placeholder="Enter address or landmark" className="pl-10" required />
+                  <Select required onValueChange={setSelectedLocation} value={selectedLocation}>
+                    <SelectTrigger className="pl-10">
+                      <SelectValue placeholder="Select a city" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cities.map((city) => (
+                        <SelectItem key={city.id} value={city.name}>
+                          {city.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button type="button" variant="outline" size="sm">
                   Use Current Location
@@ -94,7 +182,7 @@ export function ReportForm() {
               {/* Category */}
               <div className="space-y-2">
                 <Label>Category *</Label>
-                <Select required>
+                <Select required value={category} onValueChange={setCategory}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
@@ -126,7 +214,7 @@ export function ReportForm() {
               {reportType === "issue" && (
                 <div className="space-y-2">
                   <Label>Priority Level</Label>
-                  <Select>
+                  <Select value={priority} onValueChange={setPriority}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select priority" />
                     </SelectTrigger>
@@ -167,6 +255,8 @@ export function ReportForm() {
                   }
                   rows={4}
                   required
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
 
@@ -210,15 +300,30 @@ export function ReportForm() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your name" />
+                    <Input
+                      id="name"
+                      placeholder="Your name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="your@email.com" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="updates" />
+                  <Checkbox
+                    id="updates"
+                    checked={sendUpdates}
+                    onCheckedChange={(checked) => setSendUpdates(Boolean(checked))}
+                  />
                   <Label htmlFor="updates" className="text-sm">
                     Send me updates about this report
                   </Label>
