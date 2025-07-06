@@ -16,5 +16,54 @@
         "report": "Hlášení",
         "dashboard": "Panel"
     },
-    "signIn": "Přihlásit se"
+    "signIn": "Přihlásit se",
+    "form": {
+        "reportTitle": "Odeslat nové hlášení",
+        "reportTypeLabel": "Co chcete nahlásit?",
+        "issue": "Nahlásit problém",
+        "review": "Sdílet recenzi / tip",
+        "title": "Název",
+        "location": "Lokalita",
+        "useCurrentLocation": "Použít aktuální polohu",
+        "category": "Kategorie",
+        "locationPlaceholder": "Vyberte město",
+        "categoryPlaceholder": "Vyberte kategorii",
+        "priorityPlaceholder": "Vyberte prioritu",
+        "priority": "Úroveň priority",
+        "rating": "Hodnocení",
+        "description": "Popis",
+        "photos": "Fotky",
+        "addPhoto": "Přidat fotku",
+        "maxPhotosInfo": "Přidejte až 5 fotek pro lepší ilustraci hlášení",
+        "contactInfo": "Kontaktní informace (nepovinné)",
+        "name": "Jméno",
+        "email": "E-mail",
+        "updates": "Posílat mi aktualizace k tomuto hlášení",
+        "submit": "Odeslat hlášení",
+        "saveDraft": "Uložit jako koncept",
+        "issuePlaceholder": "Stručný popis problému",
+        "reviewPlaceholder": "Co je na tomto místě skvělé?",
+        "issueDescription": "Uveďte podrobné informace o problému...",
+        "reviewDescription": "Sdílejte své zkušenosti a tipy...",
+        "priorityLow": "Nízká – Drobné nepohodlí",
+        "priorityMedium": "Střední – Vyžaduje pozornost",
+        "priorityHigh": "Vysoká – Bezpečnostní problém",
+        "categories": {
+            "infrastructure": "Infrastruktura",
+            "safety": "Bezpečnost",
+            "cleanliness": "Čistota",
+            "transportation": "Doprava",
+            "utilities": "Služby",
+            "restaurant": "Restaurace / Kavárna",
+            "park": "Park / Rekreace",
+            "shopping": "Nakupování",
+            "service": "Služba",
+            "attraction": "Památka / Atrakce",
+            "other": "Jiné"
+        }
+    },
+    "reportPage": {
+        "title": "Odeslat hlášení",
+        "description": "Pomozte zlepšit své město hlášením problémů nebo sdílením pozitivních zkušeností"
+    }
 }
