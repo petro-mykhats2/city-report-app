@@ -1,0 +1,19 @@
+{
+    "hero.title": "Zlepšete své město, {{action}}",
+    "hero.action": "jedním hlášením",
+    "hero.description": "Sdílejte recenze, hlaste problémy a pomáhejte zlepšovat svou komunitu. Spojte se se sousedy a místními úřady a vytvořte pozitivní změnu.",
+    "hero.explore": "Zobrazit mapu",
+    "hero.submit": "Odeslat hlášení",
+    "hero.feature1.title": "Podle lokace",
+    "hero.feature1.text": "Připněte hlášení ke konkrétním místům pro lepší informovanost komunity",
+    "hero.feature2.title": "Iniciativa komunity",
+    "hero.feature2.text": "Sdílejte zkušenosti a pomáhejte ostatním objevit důležitá místa",
+    "hero.feature3.title": "Fotky v hlášeních",
+    "hero.feature3.text": "Přidávejte fotografie pro lepší přehlednost a efektivitu hlášení",
+    "header": {
+        "home": "Domů",
+        "map": "Mapa",
+        "report": "Hlášení",
+        "dashboard": "Panel"
+    }
+}

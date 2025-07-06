@@ -1,0 +1,19 @@
+{
+    "hero.title": "Improve Your City, {{action}}",
+    "hero.action": "One Report at a Time",
+    "hero.description": "Share reviews, report issues, and help make your community better. Connect with neighbors and local authorities to create positive change.",
+    "hero.explore": "Explore Map",
+    "hero.submit": "Submit Report",
+    "hero.feature1.title": "Location-Based",
+    "hero.feature1.text": "Pin reports to exact locations for better community awareness",
+    "hero.feature2.title": "Community Driven",
+    "hero.feature2.text": "Share experiences and help others discover important places",
+    "hero.feature3.title": "Visual Reports",
+    "hero.feature3.text": "Add photos to make your reports more impactful and clear",
+    "header": {
+        "home": "Home",
+        "map": "Map",
+        "report": "Report",
+        "dashboard": "Dashboard"
+    }
+}
