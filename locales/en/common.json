@@ -16,5 +16,54 @@
         "report": "Report",
         "dashboard": "Dashboard"
     },
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "form": {
+        "reportTitle": "Submit a New Report",
+        "reportTypeLabel": "What would you like to report?",
+        "issue": "Report an Issue",
+        "review": "Share a Review/Tip",
+        "title": "Title",
+        "location": "Location",
+        "useCurrentLocation": "Use Current Location",
+        "category": "Category",
+        "locationPlaceholder": "Select a city",
+        "categoryPlaceholder": "Select a category",
+        "priorityPlaceholder": "Select priority",
+        "priority": "Priority Level",
+        "rating": "Rating",
+        "description": "Description",
+        "photos": "Photos",
+        "addPhoto": "Add Photo",
+        "maxPhotosInfo": "Add up to 5 photos to help illustrate your report",
+        "contactInfo": "Contact Information (Optional)",
+        "name": "Name",
+        "email": "Email",
+        "updates": "Send me updates about this report",
+        "submit": "Submit Report",
+        "saveDraft": "Save as Draft",
+        "issuePlaceholder": "Brief description of the issue",
+        "reviewPlaceholder": "What's great about this place?",
+        "issueDescription": "Provide detailed information about the issue...",
+        "reviewDescription": "Share your experience and tips...",
+        "priorityLow": "Low - Minor inconvenience",
+        "priorityMedium": "Medium - Needs attention",
+        "priorityHigh": "High - Safety concern",
+        "categories": {
+            "infrastructure": "Infrastructure",
+            "safety": "Safety",
+            "cleanliness": "Cleanliness",
+            "transportation": "Transportation",
+            "utilities": "Utilities",
+            "restaurant": "Restaurant/Cafe",
+            "park": "Park/Recreation",
+            "shopping": "Shopping",
+            "service": "Service",
+            "attraction": "Attraction",
+            "other": "Other"
+        }
+    },
+    "reportPage": {
+        "title": "Submit a Report",
+        "description": "Help improve your city by reporting issues or sharing positive experiences"
+    }
 }
