@@ -73,7 +73,7 @@ export function ReportForm() {
       photos,
       contact: {
         name,
-        email,
+        email: "test+" + Math.floor(Math.random() * 1000) + "@example.com", // автогенерований email
         sendUpdates,
       },
       createdAt: serverTimestamp(),
@@ -305,13 +305,16 @@ export function ReportForm() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">{t("form.email")}</Label>
-                    <Input
+                   <Input
                       id="email"
                       type="email"
                       placeholder={t("form.email")}
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      disabled
                     />
+                    <p className="text-xs text-muted-foreground">
+                       {t("form.emailNote")}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
