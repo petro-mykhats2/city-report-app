@@ -15,5 +15,6 @@
         "map": "Map",
         "report": "Report",
         "dashboard": "Dashboard"
-    }
+    },
+    "signIn": "Sign In"
 }

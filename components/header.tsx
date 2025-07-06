@@ -65,7 +65,7 @@ export function Header() {
               <>
                 {/* Desktop button with text */}
                 <Button asChild className="hidden sm:inline-flex">
-                  <Link href="/auth">Sign In</Link>
+                  <Link href="/auth">{t('signIn')}</Link>
                 </Button>
 
                 {/* Mobile button with icon only */}
