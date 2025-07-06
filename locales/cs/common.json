@@ -38,6 +38,7 @@
         "contactInfo": "Kontaktní informace (nepovinné)",
         "name": "Jméno",
         "email": "E-mail",
+        "emailNote": "Toto pole se momentálně nepoužívá. Během testování bude uložena náhodná e-mailová adresa.",
         "updates": "Posílat mi aktualizace k tomuto hlášení",
         "submit": "Odeslat hlášení",
         "saveDraft": "Uložit jako koncept",
@@ -48,6 +49,10 @@
         "priorityLow": "Nízká – Drobné nepohodlí",
         "priorityMedium": "Střední – Vyžaduje pozornost",
         "priorityHigh": "Vysoká – Bezpečnostní problém",
+        "submissionFailedTitle": "Odeslání se nezdařilo",
+        "submissionFailedDescription": "Zkuste to prosím znovu později.",
+        "submissionSuccessTitle": "Hlášení odesláno!",
+        "submissionSuccessDescription": "Děkujeme za pomoc při zlepšování našeho města.",
         "categories": {
             "infrastructure": "Infrastruktura",
             "safety": "Bezpečnost",

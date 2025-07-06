@@ -38,6 +38,7 @@
         "contactInfo": "Contact Information (Optional)",
         "name": "Name",
         "email": "Email",
+        "emailNote": "This field is currently not used. A random email address will be saved during testing.",
         "updates": "Send me updates about this report",
         "submit": "Submit Report",
         "saveDraft": "Save as Draft",
@@ -48,6 +49,10 @@
         "priorityLow": "Low - Minor inconvenience",
         "priorityMedium": "Medium - Needs attention",
         "priorityHigh": "High - Safety concern",
+        "submissionFailedTitle": "Submission failed",
+        "submissionFailedDescription": "Please try again later.",
+        "submissionSuccessTitle": "Report Submitted!",
+        "submissionSuccessDescription": "Thank you for helping improve our city.",
         "categories": {
             "infrastructure": "Infrastructure",
             "safety": "Safety",
