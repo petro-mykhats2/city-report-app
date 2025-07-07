@@ -24,6 +24,7 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
 import { db } from "@/lib/firebase"
+import { formatTimeToNow } from "@/lib/utils"
 
 export function ReportsPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -216,7 +217,7 @@ export function ReportsPage() {
                 </Avatar>
                 <span className="text-sm text-muted-foreground">{report.author}</span>
                 <Clock className="h-3 w-3 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">{report.time}</span>
+                <span className="text-sm text-muted-foreground">{formatTimeToNow(report.createdAt.toDate())}</span>
               </div>
 
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
