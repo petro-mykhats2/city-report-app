@@ -1,6 +1,7 @@
 {
-    "hero.title": "Improve Your City, {{action}}",
-    "hero.action": "One Report at a Time",
+    "hero.titleStart": "Improve Your City, ",
+    "hero.titleHighlight": "One Report",
+    "hero.titleEnd": " at a Time",
     "hero.description": "Share reviews, report issues, and help make your community better. Connect with neighbors and local authorities to create positive change.",
     "hero.explore": "Explore Map",
     "hero.submit": "Submit Report",
@@ -13,7 +14,8 @@
     "header": {
         "home": "Home",
         "map": "Map",
-        "report": "Report",
+        "reports": "Community Reports",
+        "report": "New Report",
         "dashboard": "Dashboard"
     },
     "signIn": "Sign In",

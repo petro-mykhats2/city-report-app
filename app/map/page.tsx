@@ -1,6 +1,6 @@
 import { MapView } from "@/components/map-view"
 import { MapFilters } from "@/components/map-filters"
-import { ReportsList } from "@/components/reports-list"
+import { RecentReports } from "@/components/recent-reports"
 
 export default function MapPage() {
   return (
@@ -11,14 +11,14 @@ export default function MapPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 order-2 lg:order-1">
           <MapFilters />
         </div>
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 order-1 lg:order-2">
           <MapView />
         </div>
-        <div className="lg:col-span-1">
-          <ReportsList />
+        <div className="lg:col-span-1 order-3">
+          <RecentReports />
         </div>
       </div>
     </div>
