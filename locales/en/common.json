@@ -14,7 +14,8 @@
     "header": {
         "home": "Home",
         "map": "Map",
-        "report": "Report",
+        "reports": "Community Reports",
+        "report": "New Report",
         "dashboard": "Dashboard"
     },
     "signIn": "Sign In",
