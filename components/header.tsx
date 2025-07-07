@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Bell, Menu, User } from "lucide-react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import LanguageSwitcher from "./ui/LanguageSwitcher"
 import { useTranslation } from "@/i18n"
@@ -88,6 +88,10 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle>Mobile Navigation</SheetTitle>
+                  <SheetDescription>Access key sections of the application.</SheetDescription>
+                </SheetHeader>
                 <nav className="flex flex-col space-y-4 mt-8">
                   {navigation.map((item) => (
                     <Link
