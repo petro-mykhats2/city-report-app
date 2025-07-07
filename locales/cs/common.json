@@ -1,6 +1,7 @@
 {
-    "hero.title": "Zlepšete své město, {{action}}",
-    "hero.action": "jedním hlášením",
+    "hero.titleStart": "Zlepši své město ",
+    "hero.titleHighlight": "jedním hlášením",
+    "hero.titleEnd": " – právě teď",
     "hero.description": "Sdílejte recenze, hlaste problémy a pomáhejte zlepšovat svou komunitu. Spojte se se sousedy a místními úřady a vytvořte pozitivní změnu.",
     "hero.explore": "Zobrazit mapu",
     "hero.submit": "Odeslat hlášení",
