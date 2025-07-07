@@ -55,8 +55,8 @@ export function ReportsPage() {
 
   const categories = [
     { id: "all", label: "All Reports", count: allReports.length },
-    { id: "issues", label: "Issues", count: allReports.filter((r) => r.type === "issue").length },
-    { id: "reviews", label: "Reviews", count: allReports.filter((r) => r.type === "review").length },
+    { id: "issue", label: "Issues", count: allReports.filter((r) => r.type === "issue").length },
+    { id: "review", label: "Reviews", count: allReports.filter((r) => r.type === "review").length },
     {
       id: "infrastructure",
       label: "Infrastructure",
