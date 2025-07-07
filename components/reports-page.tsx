@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -22,127 +22,36 @@ import {
   ChevronDown,
 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { collection, getDocs, orderBy, query } from "firebase/firestore"
+import { db } from "@/lib/firebase"
 
 export function ReportsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeCategory, setActiveCategory] = useState("all")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [sortBy, setSortBy] = useState("recent")
+  
+  const [allReports, setAllReports] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Mock data - expanded for demonstration
-  const allReports = [
-    {
-      id: 1,
-      type: "issue",
-      title: "Large pothole causing vehicle damage on Main Street",
-      description: "Deep pothole has been growing larger over the past month, causing damage to several vehicles.",
-      location: "Main St & 5th Ave",
-      category: "infrastructure",
-      priority: "high",
-      status: "pending",
-      author: "John D.",
-      authorAvatar: "/placeholder.svg?height=40&width=40",
-      time: "2 hours ago",
-      date: "2024-01-15",
-      likes: 12,
-      comments: 3,
-      views: 45,
-      hasPhoto: true,
-      photos: ["/placeholder.svg?height=200&width=300&text=Pothole"],
-    },
-    // {
-    //   id: 2,
-    //   type: "review",
-    //   title: "Amazing coffee and atmosphere at Central Cafe",
-    //   description: "Best latte in the city with incredibly friendly staff. The new renovation looks fantastic!",
-    //   location: "Central Cafe, Downtown",
-    //   category: "restaurant",
-    //   rating: 5,
-    //   author: "Sarah M.",
-    //   authorAvatar: "/placeholder.svg?height=40&width=40",
-    //   time: "4 hours ago",
-    //   date: "2024-01-15",
-    //   likes: 8,
-    //   comments: 2,
-    //   views: 67,
-    //   hasPhoto: true,
-    //   photos: ["/placeholder.svg?height=200&width=300&text=Cafe"],
-    // },
-    // {
-    //   id: 3,
-    //   type: "issue",
-    //   title: "Broken street light creating safety hazard",
-    //   description: "Street light has been out for over a week, making the area unsafe for pedestrians at night.",
-    //   location: "Oak Street near Park",
-    //   category: "safety",
-    //   priority: "medium",
-    //   status: "in-progress",
-    //   author: "Mike R.",
-    //   authorAvatar: "/placeholder.svg?height=40&width=40",
-    //   time: "1 day ago",
-    //   date: "2024-01-14",
-    //   likes: 5,
-    //   comments: 1,
-    //   views: 89,
-    //   hasPhoto: false,
-    //   photos: [],
-    // },
-    // {
-    //   id: 4,
-    //   type: "review",
-    //   title: "Beautiful park renovation exceeded expectations",
-    //   description: "The new playground equipment and walking paths are fantastic. Great job by the city!",
-    //   location: "Central Park",
-    //   category: "park",
-    //   rating: 4,
-    //   author: "Emma L.",
-    //   authorAvatar: "/placeholder.svg?height=40&width=40",
-    //   time: "2 days ago",
-    //   date: "2024-01-13",
-    //   likes: 15,
-    //   comments: 7,
-    //   views: 123,
-    //   hasPhoto: true,
-    //   photos: ["/placeholder.svg?height=200&width=300&text=Park"],
-    // },
-    // {
-    //   id: 5,
-    //   type: "issue",
-    //   title: "Overflowing trash bins in downtown area",
-    //   description: "Multiple trash bins have been overflowing for days, creating unsanitary conditions.",
-    //   location: "Downtown Shopping District",
-    //   category: "cleanliness",
-    //   priority: "medium",
-    //   status: "pending",
-    //   author: "Alex K.",
-    //   authorAvatar: "/placeholder.svg?height=40&width=40",
-    //   time: "3 days ago",
-    //   date: "2024-01-12",
-    //   likes: 9,
-    //   comments: 4,
-    //   views: 78,
-    //   hasPhoto: true,
-    //   photos: ["/placeholder.svg?height=200&width=300&text=Trash"],
-    // },
-    // {
-    //   id: 6,
-    //   type: "review",
-    //   title: "Excellent service at City Library",
-    //   description: "Staff is incredibly helpful and the new digital resources are amazing.",
-    //   location: "City Central Library",
-    //   category: "service",
-    //   rating: 5,
-    //   author: "Lisa P.",
-    //   authorAvatar: "/placeholder.svg?height=40&width=40",
-    //   time: "4 days ago",
-    //   date: "2024-01-11",
-    //   likes: 6,
-    //   comments: 2,
-    //   views: 56,
-    //   hasPhoto: false,
-    //   photos: [],
-    // },
-  ]
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const q = query(collection(db, "reports"), orderBy("createdAt", "desc"))
+        const snapshot = await getDocs(q)
+        const reports = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        setAllReports(reports)
+        console.log("Fetched reports:", reports)
+      } catch (error) {
+        console.error("Error fetching reports:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchReports()
+  }, [])
+
 
   const categories = [
     { id: "all", label: "All Reports", count: allReports.length },
@@ -319,6 +228,7 @@ export function ReportsPage() {
       </CardContent>
     </Card>
   )
+  
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -438,3 +348,4 @@ export function ReportsPage() {
     </div>
   )
 }
+

@@ -62,7 +62,7 @@ export function ReportForm() {
       return
     }
 
-    const newReport = {
+   const newReport = {
       type: reportType,
       title,
       description,
@@ -71,13 +71,21 @@ export function ReportForm() {
       priority: reportType === "issue" ? priority : null,
       rating: reportType === "review" ? rating : null,
       photos,
+      hasPhoto: photos.length > 0,
+      likes: 0,
+      comments: 0,
+      views: 0,
+      author: name,
+      authorAvatar: "/placeholder.svg",
+      status: reportType === "issue" ? "pending" : null, // 👈 нове поле!
       contact: {
         name,
-        email: "test+" + Math.floor(Math.random() * 1000) + "@example.com", // автогенерований email
+        email: "test+" + Math.floor(Math.random() * 1000) + "@example.com",
         sendUpdates,
       },
       createdAt: serverTimestamp(),
     }
+
 
     try {
       await addDoc(collection(db, "reports"), newReport)
