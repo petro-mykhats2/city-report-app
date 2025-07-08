@@ -117,10 +117,11 @@ export function ReportsPage() {
           isListView ? "mb-4" : ""
         }`}
       >
-        <CardContent className={`p-0 ${isListView ? "flex" : ""}`}>
+        <CardContent className={`p-0 ${isListView ? "flex flex-col md:flex-row" : ""}`}>
           {/* Image */}
           {(report.hasPhoto || displayPhotos.length > 0) && (
-            <div className={`relative overflow-hidden ${isListView ? "w-48 flex-shrink-0" : "aspect-video w-full"}`}>
+            <div className={`relative overflow-hidden ${isListView ? "w-full md:w-48 flex-shrink-0" : "aspect-video w-full"}`}>
+
               <img
                 src={displayPhotos[0] || "/placeholder.svg"}
                 alt={report.title}
