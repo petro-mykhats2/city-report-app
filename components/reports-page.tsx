@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -20,6 +20,7 @@ import {
   Grid3X3,
   List,
   ChevronDown,
+  TrendingUp,
 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
@@ -104,6 +105,22 @@ export function ReportsPage() {
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400"
     }
+  }
+
+if (loading) {
+    return (
+      <Card className="h-fit">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <TrendingUp className="h-5 w-5" />
+            {t("recentReports.loading")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{t("recentReports.loadingMessage")}</p>
+        </CardContent>
+      </Card>
+    )
   }
 
   const ReportCard = ({ report, isListView = false }: { report: any; isListView?: boolean }) => {
