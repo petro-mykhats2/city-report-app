@@ -129,7 +129,8 @@ export function RecentReports() {
                 <div className="flex items-center gap-1 mb-2 flex-wrap">
                   {report.type === "issue" && report.priority && (
                     <Badge className={`text-xs px-1.5 py-0.5 ${getPriorityColor(report.priority)}`}>
-                      {report.priority}
+                      {t(`reportCard.priority.${report.priority}`)}
+
                     </Badge>
                   )}
                   {report.type === "issue" && report.status && (
