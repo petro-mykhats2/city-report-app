@@ -72,5 +72,40 @@
     "reportPage": {
         "title": "Submit a Report",
         "description": "Help improve your city by reporting issues or sharing positive experiences"
+    },
+    "reportsPage": {
+        "communityReports": "Community Reports",
+        "description": "Discover what's happening in your community and contribute to making it better",
+        "searchPlaceholder": "Search reports, locations, or categories...",
+        "sortBy": "Sort by",
+        "mostRecent": "Most Recent",
+        "mostPopular": "Most Popular",
+        "oldestFirst": "Oldest First",
+        "allReports": "All Reports",
+        "issues": "Issues",
+        "reviews": "Reviews",
+        "infrastructure": "Infrastructure",
+        "safety": "Safety",
+        "cleanliness": "Cleanliness",
+        "showingReports": "Showing {{count}} report(s)",
+        "forSearch": "for \"{{search}}\"",
+        "noReportsFound": "No reports found",
+        "tryAdjustingSearch": "Try adjusting your search terms or filters",
+        "clearFilters": "Clear filters",
+        "loadMoreReports": "Load More Reports"
+    },
+    "reportCard": {
+        "issue": "Issue",
+        "review": "Review",
+        "priority": {
+            "high": "High priority",
+            "medium": "Medium priority",
+            "low": "Low priority"
+        },
+        "status": {
+            "pending": "Pending",
+            "in-progress": "In Progress",
+            "resolved": "Resolved"
+        }
     }
 }

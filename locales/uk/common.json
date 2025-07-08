@@ -72,5 +72,40 @@
     "reportPage": {
         "title": "Надіслати повідомлення",
         "description": "Допоможіть покращити своє місто, повідомляючи про проблеми або ділячись позитивним досвідом"
+    },
+    "reportsPage": {
+        "communityReports": "Звіти громади",
+        "description": "Дізнавайтесь, що відбувається у вашій громаді, та допомагайте її покращувати",
+        "searchPlaceholder": "Пошук звітів, місць або категорій...",
+        "sortBy": "Сортувати за",
+        "mostRecent": "Найновіші",
+        "mostPopular": "Популярні",
+        "oldestFirst": "Спочатку найстаріші",
+        "allReports": "Усі звіти",
+        "issues": "Проблеми",
+        "reviews": "Відгуки",
+        "infrastructure": "Інфраструктура",
+        "safety": "Безпека",
+        "cleanliness": "Чистота",
+        "showingReports": "Показано {{count}} звіт(ів)",
+        "forSearch": "для \"{{search}}\"",
+        "noReportsFound": "Звітів не знайдено",
+        "tryAdjustingSearch": "Спробуйте змінити умови пошуку або фільтри",
+        "clearFilters": "Очистити фільтри",
+        "loadMoreReports": "Завантажити ще звіти"
+    },
+    "reportCard": {
+        "issue": "Проблема",
+        "review": "Відгук",
+        "priority": {
+            "high": "Високий пріоритет",
+            "medium": "Середній пріоритет",
+            "low": "Низький пріоритет"
+        },
+        "status": {
+            "pending": "Очікує",
+            "in-progress": "В процесі",
+            "resolved": "Вирішено"
+        }
     }
 }
