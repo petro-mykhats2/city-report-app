@@ -107,5 +107,9 @@
             "in-progress": "In Progress",
             "resolved": "Resolved"
         }
+    },
+    "mapPage": {
+        "title": "City Map",
+        "description": "Explore reports and reviews from your community"
     }
 }
