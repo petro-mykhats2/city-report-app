@@ -107,5 +107,9 @@
             "in-progress": "Probíhá",
             "resolved": "Vyřešeno"
         }
+    },
+    "mapPage": {
+        "title": "Městská mapa",
+        "description": "Prozkoumejte zprávy a recenze od vaší komunity"
     }
 }
