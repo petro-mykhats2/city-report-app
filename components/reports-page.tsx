@@ -346,7 +346,7 @@ export function ReportsPage() {
                   setActiveCategory("all")
                 }}
               >
-                 {t("clearFilters")}
+                 {t("reportsPage.clearFilters")}
               </Button>
             </div>
           )}
