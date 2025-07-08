@@ -61,8 +61,8 @@ export function ReportsPage() {
 
   const categories = [
     { id: "all", label: t("reportsPage.allReports"), count: allReports.length },
-    { id: "issues", label: t("reportsPage.issues"), count: allReports.filter((r) => r.type === "issue").length },
-    { id: "reviews", label: t("reportsPage.reviews"), count: allReports.filter((r) => r.type === "review").length },
+    { id: "issue", label: t("reportsPage.issues"), count: allReports.filter((r) => r.type === "issue").length },
+    { id: "review", label: t("reportsPage.reviews"), count: allReports.filter((r) => r.type === "review").length },
     { id: "infrastructure", label: t("reportsPage.infrastructure"), count: allReports.filter((r) => r.category === "infrastructure").length },
     { id: "safety", label: t("reportsPage.safety"), count: allReports.filter((r) => r.category === "safety").length },
     { id: "cleanliness", label: t("reportsPage.cleanliness"), count: allReports.filter((r) => r.category === "cleanliness").length },
