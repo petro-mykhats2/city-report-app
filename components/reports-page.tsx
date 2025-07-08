@@ -25,8 +25,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { formatTimeToNow } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
+
 
 export function ReportsPage() {
+  const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState("")
   const [activeCategory, setActiveCategory] = useState("all")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
@@ -34,7 +37,10 @@ export function ReportsPage() {
 
   const [allReports, setAllReports] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const { i18n } = useTranslation()
+  const currentLang = i18n.language
 
+   
   useEffect(() => {
     const fetchReports = async () => {
       try {
@@ -54,16 +60,12 @@ export function ReportsPage() {
   }, [])
 
   const categories = [
-    { id: "all", label: "All Reports", count: allReports.length },
-    { id: "issue", label: "Issues", count: allReports.filter((r) => r.type === "issue").length },
-    { id: "review", label: "Reviews", count: allReports.filter((r) => r.type === "review").length },
-    {
-      id: "infrastructure",
-      label: "Infrastructure",
-      count: allReports.filter((r) => r.category === "infrastructure").length,
-    },
-    { id: "safety", label: "Safety", count: allReports.filter((r) => r.category === "safety").length },
-    { id: "cleanliness", label: "Cleanliness", count: allReports.filter((r) => r.category === "cleanliness").length },
+    { id: "all", label: t("reportsPage.allReports"), count: allReports.length },
+    { id: "issues", label: t("reportsPage.issues"), count: allReports.filter((r) => r.type === "issue").length },
+    { id: "reviews", label: t("reportsPage.reviews"), count: allReports.filter((r) => r.type === "review").length },
+    { id: "infrastructure", label: t("reportsPage.infrastructure"), count: allReports.filter((r) => r.category === "infrastructure").length },
+    { id: "safety", label: t("reportsPage.safety"), count: allReports.filter((r) => r.category === "safety").length },
+    { id: "cleanliness", label: t("reportsPage.cleanliness"), count: allReports.filter((r) => r.category === "cleanliness").length },
   ]
 
   const filteredReports = allReports.filter((report) => {
@@ -112,7 +114,7 @@ export function ReportsPage() {
         : [`/placeholder.svg?height=100&width=100&text=No+Photo`]
 
     return (
-      <Card
+          <Card
         className={`group hover:shadow-lg transition-all duration-300 cursor-pointer hover:border-primary/20 ${
           isListView ? "mb-4" : ""
         }`}
@@ -121,7 +123,6 @@ export function ReportsPage() {
           {/* Image */}
           {(report.hasPhoto || displayPhotos.length > 0) && (
             <div className={`relative overflow-hidden ${isListView ? "w-full md:w-48 flex-shrink-0" : "aspect-video w-full"}`}>
-
               <img
                 src={displayPhotos[0] || "/placeholder.svg"}
                 alt={report.title}
@@ -138,7 +139,7 @@ export function ReportsPage() {
                   ) : (
                     <Star className="h-3 w-3 mr-1" />
                   )}
-                  {report.type === "issue" ? "Issue" : "Review"}
+                  {t(`reportCard.${report.type}`)}
                 </Badge>
               </div>
               {displayPhotos.length > 1 && (
@@ -166,7 +167,9 @@ export function ReportsPage() {
                     ) : (
                       <Star className="h-4 w-4 text-green-500" />
                     )}
-                    <Badge variant="outline">{report.type === "issue" ? "Issue" : "Review"}</Badge>
+                    <Badge variant="outline">
+                      {t(`reportCard.${report.type}`)}
+                    </Badge>
                   </div>
                 )}
                 <h3 className="font-semibold text-lg leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
@@ -185,11 +188,13 @@ export function ReportsPage() {
             {/* Badges */}
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               {report.type === "issue" && report.priority && (
-                <Badge className={getPriorityColor(report.priority)}>{report.priority} priority</Badge>
+                <Badge className={getPriorityColor(report.priority)}>
+                  {t(`reportCard.priority.${report.priority}`)}
+                </Badge>
               )}
               {report.type === "issue" && report.status && (
                 <Badge className={getStatusColor(report.status)}>
-                  {report.status === "in-progress" ? "In Progress" : report.status}
+                  {t(`reportCard.status.${report.status}`)}
                 </Badge>
               )}
               {report.type === "review" && report.rating && (
@@ -218,7 +223,9 @@ export function ReportsPage() {
                 </Avatar>
                 <span className="text-sm text-muted-foreground">{report.author}</span>
                 <Clock className="h-3 w-3 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">{formatTimeToNow(report.createdAt.toDate())}</span>
+                <span className="text-sm text-muted-foreground">
+                 {formatTimeToNow(report.createdAt.toDate(), i18n.language)}
+                </span>
               </div>
 
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -235,6 +242,7 @@ export function ReportsPage() {
           </div>
         </CardContent>
       </Card>
+
     )
   }
 
@@ -242,9 +250,9 @@ export function ReportsPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Community Reports</h1>
+        <h1 className="text-3xl font-bold mb-2">{t("reportsPage.communityReports")}</h1>
         <p className="text-muted-foreground">
-          Discover what's happening in your community and contribute to making it better
+        {t("reportsPage.description")}
         </p>
       </div>
 
@@ -254,7 +262,7 @@ export function ReportsPage() {
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search reports, locations, or categories..."
+            placeholder={t("reportsPage.searchPlaceholder")}
             className="pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -277,14 +285,14 @@ export function ReportsPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  Sort by: {sortBy === "recent" ? "Recent" : sortBy === "popular" ? "Popular" : "Oldest"}
+                  {t("reportsPage.sortBy")}: {sortBy === "recent" ? t("reportsPage.mostRecent") : sortBy === "popular" ? t("reportsPage.mostPopular") : t("reportsPage.oldestFirst")}
                   <ChevronDown className="h-4 w-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setSortBy("recent")}>Most Recent</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy("popular")}>Most Popular</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy("oldest")}>Oldest First</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("recent")}>{t("reportsPage.mostRecent")}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("popular")}>{t("reportsPage.mostPopular")}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("oldest")}>{t("reportsPage.oldestFirst")}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -312,8 +320,8 @@ export function ReportsPage() {
           {/* Results Count */}
           <div className="mb-4">
             <p className="text-sm text-muted-foreground">
-              Showing {filteredReports.length} {filteredReports.length === 1 ? "report" : "reports"}
-              {searchQuery && ` for "${searchQuery}"`}
+             {t("reportsPage.showingReports", { count: filteredReports.length })}
+             {searchQuery && ` for "${searchQuery}"`}
             </p>
           </div>
 
@@ -329,8 +337,8 @@ export function ReportsPage() {
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
                 <Search className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No reports found</h3>
-              <p className="text-muted-foreground mb-4">Try adjusting your search terms or filters</p>
+              <h3 className="text-lg font-semibold mb-2">{t("reportsPage.noReportsFound")}</h3>
+              <p className="text-muted-foreground mb-4">{t("reportsPage.tryAdjustingSearch")}</p>
               <Button
                 variant="outline"
                 onClick={() => {
@@ -338,7 +346,7 @@ export function ReportsPage() {
                   setActiveCategory("all")
                 }}
               >
-                Clear filters
+                 {t("clearFilters")}
               </Button>
             </div>
           )}
@@ -347,7 +355,7 @@ export function ReportsPage() {
           {filteredReports.length > 0 && (
             <div className="text-center mt-8">
               <Button variant="outline" size="lg">
-                Load More Reports
+                {t("reportsPage.loadMoreReports")}
               </Button>
             </div>
           )}

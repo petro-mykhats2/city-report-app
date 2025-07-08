@@ -72,5 +72,40 @@
     "reportPage": {
         "title": "Odeslat hlášení",
         "description": "Pomozte zlepšit své město hlášením problémů nebo sdílením pozitivních zkušeností"
+    },
+    "reportsPage": {
+        "communityReports": "Zprávy komunity",
+        "description": "Zjistěte, co se děje ve vaší komunitě, a přispějte k jejímu zlepšení",
+        "searchPlaceholder": "Hledat zprávy, místa nebo kategorie...",
+        "sortBy": "Seřadit podle",
+        "mostRecent": "Nejnovější",
+        "mostPopular": "Nejoblíbenější",
+        "oldestFirst": "Nejstarší první",
+        "allReports": "Všechny zprávy",
+        "issues": "Problémy",
+        "reviews": "Recenze",
+        "infrastructure": "Infrastruktura",
+        "safety": "Bezpečnost",
+        "cleanliness": "Čistota",
+        "showingReports": "Zobrazeno {{count}} zpráv",
+        "forSearch": "pro \"{{search}}\"",
+        "noReportsFound": "Žádné zprávy nenalezeny",
+        "tryAdjustingSearch": "Zkuste upravit hledané výrazy nebo filtry",
+        "clearFilters": "Vymazat filtry",
+        "loadMoreReports": "Načíst další zprávy"
+    },
+    "reportCard": {
+        "issue": "Problém",
+        "review": "Recenze",
+        "priority": {
+            "high": "Vysoká priorita",
+            "medium": "Střední priorita",
+            "low": "Nízká priorita"
+        },
+        "status": {
+            "pending": "Čeká na vyřízení",
+            "in-progress": "Probíhá",
+            "resolved": "Vyřešeno"
+        }
     }
 }
