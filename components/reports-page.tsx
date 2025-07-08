@@ -119,7 +119,7 @@ export function ReportsPage() {
           isListView ? "mb-4" : ""
         }`}
       >
-        <CardContent className={`p-0 ${isListView ? "flex flex-col md:flex-row" : ""}`}>
+        <CardContent className={`p-0 ${isListView ? "flex flex-col md:flex-row" : "flex flex-col h-full"}`}>
           {/* Image */}
           {(report.hasPhoto || displayPhotos.length > 0) && (
             <div className={`relative overflow-hidden ${isListView ? "w-full md:w-48 flex-shrink-0" : "aspect-video w-full"}`}>
@@ -154,7 +154,7 @@ export function ReportsPage() {
           )}
 
           {/* Content */}
-          <div className="p-4 flex-1">
+          <div className="p-4 flex-1 flex flex-col justify-between">
             {/* Header */}
             <div className="flex items-start justify-between mb-2">
               <div className="flex-1">
@@ -179,63 +179,66 @@ export function ReportsPage() {
               </div>
             </div>
 
-            {/* Location */}
-            <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
-              <MapPin className="h-4 w-4" />
-              <span>{report.location}</span>
-            </div>
-
-            {/* Badges */}
-            <div className="flex items-center gap-2 mb-4 flex-wrap">
-              {report.type === "issue" && report.priority && (
-                <Badge className={getPriorityColor(report.priority)}>
-                  {t(`reportCard.priority.${report.priority}`)}
-                </Badge>
-              )}
-              {report.type === "issue" && report.status && (
-                <Badge className={getStatusColor(report.status)}>
-                  {t(`reportCard.status.${report.status}`)}
-                </Badge>
-              )}
-              {report.type === "review" && report.rating && (
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${i < report.rating ? "text-yellow-400 fill-current" : "text-gray-300"}`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Footer */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-6 w-6">
-                  <AvatarImage src={report.authorAvatar || "/placeholder.svg"} alt={report.author} />
-                  <AvatarFallback className="text-xs">
-                    {report.author
-                      .split(" ")
-                      .map((n: string) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm text-muted-foreground">{report.author}</span>
-                <Clock className="h-3 w-3 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
-                 {formatTimeToNow(report.createdAt.toDate(), i18n.language)}
-                </span>
+            {/* Grouped bottom content */}
+            <div className="mt-auto space-y-3">
+              {/* Location */}
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <MapPin className="h-4 w-4" />
+                <span>{report.location}</span>
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <ThumbsUp className="h-4 w-4" />
-                  <span>{report.likes}</span>
+              {/* Badges */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {report.type === "issue" && report.priority && (
+                  <Badge className={getPriorityColor(report.priority)}>
+                    {t(`reportCard.priority.${report.priority}`)}
+                  </Badge>
+                )}
+                {report.type === "issue" && report.status && (
+                  <Badge className={getStatusColor(report.status)}>
+                    {t(`reportCard.status.${report.status}`)}
+                  </Badge>
+                )}
+                {report.type === "review" && report.rating && (
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${i < report.rating ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={report.authorAvatar || "/placeholder.svg"} alt={report.author} />
+                    <AvatarFallback className="text-xs">
+                      {report.author
+                        .split(" ")
+                        .map((n: string) => n[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm text-muted-foreground">{report.author}</span>
+                  <Clock className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    {formatTimeToNow(report.createdAt.toDate(), i18n.language)}
+                  </span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <MessageCircle className="h-4 w-4" />
-                  <span>{report.comments}</span>
+
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <ThumbsUp className="h-4 w-4" />
+                    <span>{report.likes}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MessageCircle className="h-4 w-4" />
+                    <span>{report.comments}</span>
+                  </div>
                 </div>
               </div>
             </div>
