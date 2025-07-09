@@ -111,5 +111,16 @@
     "mapPage": {
         "title": "Městská mapa",
         "description": "Prozkoumejte zprávy a recenze od vaší komunity"
+    },
+    "recentReports": {
+        "title": "Nedávná aktivita",
+        "viewAll": "Zobrazit všechny hlášení",
+        "loading": "Načítání...",
+        "loadingMessage": "Načítají se poslední hlášení...",
+        "status": {
+            "pending": "Čeká",
+            "resolved": "Vyřešeno",
+            "inProgress": "Probíhá"
+        }
     }
 }

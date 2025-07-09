@@ -111,5 +111,16 @@
     "mapPage": {
         "title": "City Map",
         "description": "Explore reports and reviews from your community"
+    },
+    "recentReports": {
+        "title": "Recent Activity",
+        "viewAll": "View All Reports",
+        "loading": "Loading...",
+        "loadingMessage": "Fetching the latest reports...",
+        "status": {
+            "pending": "Pending",
+            "resolved": "Resolved",
+            "inProgress": "In Progress"
+        }
     }
 }

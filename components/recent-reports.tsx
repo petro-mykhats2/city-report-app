@@ -1,9 +1,9 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   AlertTriangle,
   Star,
@@ -12,64 +12,43 @@ import {
   ThumbsUp,
   MessageCircle,
   Camera,
-  ArrowRight,
   TrendingUp,
+  ArrowRight,
 } from "lucide-react"
 import Link from "next/link"
+import { collection, getDocs, orderBy, query, limit } from "firebase/firestore"
+import { db } from "@/lib/firebase"
+import { formatTimeToNow } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 export function RecentReports() {
-  const recentReports = [
-    {
-      id: 1,
-      type: "issue",
-      title: "Large pothole on Main Street",
-      location: "Main St & 5th Ave",
-      priority: "high",
-      status: "pending",
-      author: "John D.",
-      time: "2h ago",
-      likes: 12,
-      comments: 3,
-      hasPhoto: true,
-    },
-    {
-      id: 2,
-      type: "review",
-      title: "Amazing coffee at Central Cafe",
-      location: "Central Cafe, Downtown",
-      rating: 5,
-      author: "Sarah M.",
-      time: "4h ago",
-      likes: 8,
-      comments: 2,
-      hasPhoto: true,
-    },
-    {
-      id: 3,
-      type: "issue",
-      title: "Broken street light",
-      location: "Oak Street",
-      priority: "medium",
-      status: "in-progress",
-      author: "Mike R.",
-      time: "1d ago",
-      likes: 5,
-      comments: 1,
-      hasPhoto: false,
-    },
-    {
-      id: 4,
-      type: "review",
-      title: "Beautiful park renovation",
-      location: "Central Park",
-      rating: 4,
-      author: "Emma L.",
-      time: "2d ago",
-      likes: 15,
-      comments: 7,
-      hasPhoto: true,
-    },
-  ]
+  const { t, i18n } = useTranslation()
+  const [recentReports, setRecentReports] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchRecentReports() {
+      try {
+        // Забираємо останні 4 звіти за датою створення
+        const q = query(
+          collection(db, "reports"),
+          orderBy("createdAt", "desc"),
+          limit(4)
+        )
+        const snapshot = await getDocs(q)
+        const reports = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        setRecentReports(reports)
+      } catch (error) {
+        console.error("Error fetching recent reports:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchRecentReports()
+  }, [])
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -97,17 +76,33 @@ export function RecentReports() {
     }
   }
 
+  if (loading) {
+    return (
+      <Card className="h-fit">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <TrendingUp className="h-5 w-5" />
+            {t("recentReports.loading")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{t("recentReports.loadingMessage")}</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="h-fit">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <TrendingUp className="h-5 w-5" />
-          Recent Activity
+          {t("recentReports.title")}
         </CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {recentReports.slice(0, 4).map((report) => (
+        {recentReports.map((report) => (
           <div
             key={report.id}
             className="group p-3 rounded-lg border hover:bg-muted/50 transition-all duration-200 cursor-pointer hover:shadow-sm"
@@ -138,7 +133,9 @@ export function RecentReports() {
                   <h4 className="font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
                     {report.title}
                   </h4>
-                  {report.hasPhoto && <Camera className="h-3 w-3 text-muted-foreground flex-shrink-0 ml-2" />}
+                  {report.photos && report.photos.length > 0 && (
+                    <Camera className="h-3 w-3 text-muted-foreground flex-shrink-0 ml-2" />
+                  )}
                 </div>
 
                 {/* Location */}
@@ -150,13 +147,19 @@ export function RecentReports() {
                 {/* Badges */}
                 <div className="flex items-center gap-1 mb-2 flex-wrap">
                   {report.type === "issue" && report.priority && (
-                    <Badge className={`text-xs px-1.5 py-0.5 ${getPriorityColor(report.priority)}`}>
-                      {report.priority}
+                    <Badge
+                      className={`text-xs px-1.5 py-0.5 ${getPriorityColor(report.priority)}`}
+                    >
+                      {t(`reportCard.priority.${report.priority}`)}
                     </Badge>
                   )}
                   {report.type === "issue" && report.status && (
-                    <Badge className={`text-xs px-1.5 py-0.5 ${getStatusColor(report.status)}`}>
-                      {report.status === "in-progress" ? "in progress" : report.status}
+                    <Badge
+                      className={`text-xs px-1.5 py-0.5 ${getStatusColor(report.status)}`}
+                    >
+                      {report.status === "in-progress"
+                        ? t("recentReports.status.inProgress")
+                        : t(`recentReports.status.${report.status}`)}
                     </Badge>
                   )}
                   {report.type === "review" && report.rating && (
@@ -165,7 +168,9 @@ export function RecentReports() {
                         <Star
                           key={i}
                           className={`h-2.5 w-2.5 ${
-                            i < report.rating ? "text-yellow-400 fill-current" : "text-gray-300"
+                            i < report.rating
+                              ? "text-yellow-400 fill-current"
+                              : "text-gray-300"
                           }`}
                         />
                       ))}
@@ -179,24 +184,29 @@ export function RecentReports() {
                     <Avatar className="h-4 w-4">
                       <AvatarFallback className="text-xs">
                         {report.author
-                          .split(" ")
-                          .map((n) => n[0])
+                          ?.split(" ")
+                          .map((n: string) => n[0])
                           .join("")}
                       </AvatarFallback>
                     </Avatar>
                     <span>{report.author}</span>
                     <Clock className="h-3 w-3" />
-                    <span>{report.time}</span>
+                    <span>
+                      {formatTimeToNow(
+                        report.createdAt.toDate(),
+                        i18n.language
+                      )}
+                    </span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                       <ThumbsUp className="h-3 w-3" />
-                      <span>{report.likes}</span>
+                      <span>{report.likes || 0}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <MessageCircle className="h-3 w-3" />
-                      <span>{report.comments}</span>
+                      <span>{report.comments || 0}</span>
                     </div>
                   </div>
                 </div>
@@ -207,12 +217,17 @@ export function RecentReports() {
 
         {/* View All Button */}
         <div className="pt-2">
-          <Button asChild variant="outline" className="w-full group bg-transparent">
-            <Link href="/reports">
-              View All Reports
-              <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </Button>
+          <Link href="/reports" passHref legacyBehavior>
+            <a>
+              <Badge
+                className="cursor-pointer flex items-center gap-1 justify-center"
+                variant="outline"
+              >
+                {t("recentReports.viewAll")}
+                <ArrowRight className="h-4 w-4" />
+              </Badge>
+            </a>
+          </Link>
         </div>
       </CardContent>
     </Card>
