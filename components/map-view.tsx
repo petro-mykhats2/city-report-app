@@ -7,9 +7,30 @@ import { MapPin, AlertTriangle, Star } from "lucide-react"
 export function MapView() {
   // Mock data for demonstration
   const mockReports = [
-    { id: 1, type: "issue", title: "Pothole on Main St", x: 30, y: 40, severity: "high" },
-    { id: 2, type: "review", title: "Great Coffee Shop", x: 60, y: 30, rating: 5 },
-    { id: 3, type: "issue", title: "Broken Street Light", x: 45, y: 70, severity: "medium" },
+    {
+      id: 1,
+      type: "issue",
+      title: "Pothole on Main St",
+      x: 30,
+      y: 40,
+      severity: "high",
+    },
+    {
+      id: 2,
+      type: "review",
+      title: "Great Coffee Shop",
+      x: 60,
+      y: 30,
+      rating: 5,
+    },
+    {
+      id: 3,
+      type: "issue",
+      title: "Broken Street Light",
+      x: 45,
+      y: 70,
+      severity: "medium",
+    },
     { id: 4, type: "review", title: "Beautiful Park", x: 80, y: 50, rating: 4 },
   ]
 
@@ -27,8 +48,18 @@ export function MapView() {
           <div className="absolute inset-0 opacity-20">
             <svg width="100%" height="100%" className="text-muted-foreground">
               <defs>
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
+                <pattern
+                  id="grid"
+                  width="40"
+                  height="40"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M 40 0 L 0 0 0 40"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1"
+                  />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#grid)" />
@@ -59,7 +90,11 @@ export function MapView() {
                     : "bg-green-500 text-white"
                 }`}
               >
-                {report.type === "issue" ? <AlertTriangle className="h-4 w-4" /> : <Star className="h-4 w-4" />}
+                {report.type === "issue" ? (
+                  <AlertTriangle className="h-4 w-4" />
+                ) : (
+                  <Star className="h-4 w-4" />
+                )}
               </div>
 
               {/* Tooltip */}
