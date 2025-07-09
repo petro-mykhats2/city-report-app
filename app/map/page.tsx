@@ -1,13 +1,19 @@
 "use client"
 
-import { MapView } from "@/components/map-view"
 import { MapFilters } from "@/components/map-filters"
 import { RecentReports } from "@/components/recent-reports"
 import { useTranslation } from "@/i18n"
+import dynamic from "next/dynamic"
 
 export default function MapPage() {
-
   const { t } = useTranslation()
+
+  const MapView = dynamic(
+    () => import("@/components/map-view").then((mod) => mod.MapView),
+    {
+      ssr: false,
+    }
+  )
 
   return (
     <div className="container mx-auto px-4 py-8">
