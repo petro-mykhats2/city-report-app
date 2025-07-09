@@ -4,7 +4,17 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { AlertTriangle, Star, MapPin, Clock, ThumbsUp, MessageCircle, Camera, TrendingUp, ArrowRight } from "lucide-react"
+import {
+  AlertTriangle,
+  Star,
+  MapPin,
+  Clock,
+  ThumbsUp,
+  MessageCircle,
+  Camera,
+  TrendingUp,
+  ArrowRight,
+} from "lucide-react"
 import Link from "next/link"
 import { collection, getDocs, orderBy, query, limit } from "firebase/firestore"
 import { db } from "@/lib/firebase"
@@ -20,9 +30,16 @@ export function RecentReports() {
     async function fetchRecentReports() {
       try {
         // Забираємо останні 4 звіти за датою створення
-        const q = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(4))
+        const q = query(
+          collection(db, "reports"),
+          orderBy("createdAt", "desc"),
+          limit(4)
+        )
         const snapshot = await getDocs(q)
-        const reports = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        const reports = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
         setRecentReports(reports)
       } catch (error) {
         console.error("Error fetching recent reports:", error)
@@ -116,7 +133,9 @@ export function RecentReports() {
                   <h4 className="font-medium text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
                     {report.title}
                   </h4>
-                  {report.photos && report.photos.length > 0 && <Camera className="h-3 w-3 text-muted-foreground flex-shrink-0 ml-2" />}
+                  {report.photos && report.photos.length > 0 && (
+                    <Camera className="h-3 w-3 text-muted-foreground flex-shrink-0 ml-2" />
+                  )}
                 </div>
 
                 {/* Location */}
@@ -128,14 +147,19 @@ export function RecentReports() {
                 {/* Badges */}
                 <div className="flex items-center gap-1 mb-2 flex-wrap">
                   {report.type === "issue" && report.priority && (
-                    <Badge className={`text-xs px-1.5 py-0.5 ${getPriorityColor(report.priority)}`}>
+                    <Badge
+                      className={`text-xs px-1.5 py-0.5 ${getPriorityColor(report.priority)}`}
+                    >
                       {t(`reportCard.priority.${report.priority}`)}
-
                     </Badge>
                   )}
                   {report.type === "issue" && report.status && (
-                    <Badge className={`text-xs px-1.5 py-0.5 ${getStatusColor(report.status)}`}>
-                      {report.status === "in-progress" ? t("recentReports.status.inProgress") : t(`recentReports.status.${report.status}`)}
+                    <Badge
+                      className={`text-xs px-1.5 py-0.5 ${getStatusColor(report.status)}`}
+                    >
+                      {report.status === "in-progress"
+                        ? t("recentReports.status.inProgress")
+                        : t(`recentReports.status.${report.status}`)}
                     </Badge>
                   )}
                   {report.type === "review" && report.rating && (
@@ -144,7 +168,9 @@ export function RecentReports() {
                         <Star
                           key={i}
                           className={`h-2.5 w-2.5 ${
-                            i < report.rating ? "text-yellow-400 fill-current" : "text-gray-300"
+                            i < report.rating
+                              ? "text-yellow-400 fill-current"
+                              : "text-gray-300"
                           }`}
                         />
                       ))}
@@ -165,7 +191,12 @@ export function RecentReports() {
                     </Avatar>
                     <span>{report.author}</span>
                     <Clock className="h-3 w-3" />
-                    <span>{formatTimeToNow(report.createdAt.toDate(), i18n.language)}</span>
+                    <span>
+                      {formatTimeToNow(
+                        report.createdAt.toDate(),
+                        i18n.language
+                      )}
+                    </span>
                   </div>
 
                   <div className="flex items-center gap-2">
