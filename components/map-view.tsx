@@ -1,24 +1,36 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { MapContainer, TileLayer } from "react-leaflet"
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MapPin } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
+import pragueBoundary from "@/public/Praha.json"
+
+// 🛠️ Фікс іконок для Leaflet у Next.js
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
+import markerIcon from "leaflet/dist/images/marker-icon.png"
+import markerShadow from "leaflet/dist/images/marker-shadow.png"
+
+delete (L.Icon.Default.prototype as any)._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x.src,
+  iconUrl: markerIcon.src,
+  shadowUrl: markerShadow.src,
+})
 
 export function MapView() {
-  const [zoom, setZoom] = useState(13)
+  const [zoom, setZoom] = useState(11)
   const [isMobile, setIsMobile] = useState(false)
   const [showOverlay, setShowOverlay] = useState(true)
   const mapRef = useRef<L.Map | null>(null)
 
+  // ✅ Обробка розміру екрана
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768)
     }
-
     handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
@@ -38,6 +50,10 @@ export function MapView() {
     }
   }, [isMobile])
 
+  const handleOverlayClick = () => {
+    setShowOverlay(false)
+  }
+
   const increaseZoom = () => {
     if (mapRef.current) {
       const currentZoom = mapRef.current.getZoom()
@@ -56,9 +72,27 @@ export function MapView() {
     }
   }
 
-  const handleOverlayClick = () => {
-    setShowOverlay(false)
-  }
+  // ✅ Координати межі Праги (інверсія з GeoJSON)
+  const pragueCoords: [number, number][] =
+    pragueBoundary.features[0].geometry.coordinates[0].map(
+      ([lng, lat]: number[]) => [lat, lng]
+    )
+
+  // 🟥 Маска навколо Праги
+  const outerBounds: [number, number][] = [
+    [90, -180],
+    [90, 180],
+    [-90, 180],
+    [-90, -180],
+  ]
+
+  // 📍 Маркери в межах Праги
+  const markers = [
+    { position: [50.087, 14.4208], label: "Староміська площа" },
+    { position: [50.0755, 14.4378], label: "Вацлавська площа" },
+    { position: [50.0909, 14.3983], label: "Петршинський пагорб" },
+  ]
+
   return (
     <Card className="h-[600px] relative overflow-hidden">
       <CardHeader>
@@ -84,9 +118,28 @@ export function MapView() {
               attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
+
+            {/* 🟥 Маска навколо Праги */}
+            <Polygon
+              positions={[[...outerBounds], pragueCoords]}
+              pathOptions={{
+                color: "black",
+                fillColor: "black",
+                fillOpacity: 0.5,
+                weight: 0,
+                interactive: false,
+              }}
+            />
+
+            {/* 📍 Маркери */}
+            {markers.map((marker, idx) => (
+              <Marker key={idx} position={marker.position as [number, number]}>
+                <Popup>{marker.label}</Popup>
+              </Marker>
+            ))}
           </MapContainer>
 
-          {/* Маска тільки на мобільних */}
+          {/* 📱 Мобільна маска */}
           {isMobile && showOverlay && (
             <div
               onClick={handleOverlayClick}
