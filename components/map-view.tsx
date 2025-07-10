@@ -26,6 +26,24 @@ export function MapView() {
   const [showOverlay, setShowOverlay] = useState(true)
   const mapRef = useRef<L.Map | null>(null)
 
+  const [savedMarkers, setSavedMarkers] = useState<
+    { name: string; address: string; coords: [number, number] }[]
+  >([])
+
+  useEffect(() => {
+    const saved = localStorage.getItem("locations")
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed)) {
+          setSavedMarkers(parsed)
+        }
+      } catch (err) {
+        console.error("Неможливо прочитати localStorage:", err)
+      }
+    }
+  }, [])
+
   // ✅ Обробка розміру екрана
   useEffect(() => {
     const handleResize = () => {
@@ -132,9 +150,18 @@ export function MapView() {
             />
 
             {/* 📍 Маркери */}
-            {markers.map((marker, idx) => (
+            {/* {markers.map((marker, idx) => (
               <Marker key={idx} position={marker.position as [number, number]}>
                 <Popup>{marker.label}</Popup>
+              </Marker>
+            ))} */}
+            {savedMarkers.map((marker, idx) => (
+              <Marker key={`saved-${idx}`} position={marker.coords}>
+                <Popup>
+                  <strong>{marker.name}</strong>
+                  <br />
+                  {marker.address}
+                </Popup>
               </Marker>
             ))}
           </MapContainer>
