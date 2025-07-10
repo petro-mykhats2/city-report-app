@@ -43,6 +43,10 @@ export function ReportForm() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [sendUpdates, setSendUpdates] = useState(false)
+  const [locationCoords, setLocationCoords] = useState<{
+    lat: number
+    lng: number
+  } | null>(null)
 
   const { toast } = useToast()
   const { t } = useTranslation()
@@ -69,7 +73,10 @@ export function ReportForm() {
       !title ||
       !description ||
       !selectedLocation ||
-      !category
+      !category ||
+      locationCoords === null ||
+      isNaN(locationCoords.lat) ||
+      isNaN(locationCoords.lng)
     ) {
       toast({
         title: t("form.missingFieldsTitle"),
@@ -101,6 +108,10 @@ export function ReportForm() {
         sendUpdates,
       },
       createdAt: serverTimestamp(),
+      locationCoords: {
+        lat: locationCoords.lat,
+        lng: locationCoords.lng,
+      },
     }
 
     try {
@@ -109,6 +120,7 @@ export function ReportForm() {
         title: t("form.submissionSuccessTitle"),
         description: t("form.submissionSuccessDescription"),
       })
+
       // Очистка форми після успішної відправки
       setReportType("")
       setPhotos([])
@@ -121,7 +133,9 @@ export function ReportForm() {
       setName("")
       setEmail("")
       setSendUpdates(false)
+      setLocationCoords(null)
     } catch (error) {
+      console.error("Помилка при відправці в Firestore:", error) // 👈 сюди дивися в консолі
       toast({
         title: t("form.submissionFailedTitle"),
         description: t("form.submissionFailedDescription"),
@@ -194,33 +208,74 @@ export function ReportForm() {
                 />
               </div>
 
-              {/* Location */}
+              <Label htmlFor="location">{t("form.location")} *</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Select
+                  required
+                  onValueChange={setSelectedLocation}
+                  value={selectedLocation}
+                >
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder={t("form.locationPlaceholder")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities.map((city) => (
+                      <SelectItem key={city.id} value={city.name}>
+                        {city.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button type="button" variant="outline" size="sm">
+                {t("form.useCurrentLocation")}
+              </Button>
+
+              {/* Latitude */}
               <div className="space-y-2">
-                <Label htmlFor="location">{t("form.location")} *</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Select
-                    required
-                    onValueChange={setSelectedLocation}
-                    value={selectedLocation}
-                  >
-                    <SelectTrigger className="pl-10">
-                      <SelectValue
-                        placeholder={t("form.locationPlaceholder")}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city.id} value={city.name}>
-                          {city.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button type="button" variant="outline" size="sm">
-                  {t("form.useCurrentLocation")}
-                </Button>
+                <Label htmlFor="lat">Latitude *</Label>
+                <Input
+                  id="lat"
+                  type="number"
+                  step="any"
+                  className="appearance-none"
+                  placeholder="Напр. 50.087"
+                  value={
+                    locationCoords?.lat !== undefined ? locationCoords.lat : ""
+                  }
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value)
+                    setLocationCoords((prev) => ({
+                      lat: isNaN(value) ? 0 : value,
+                      lng: prev?.lng ?? 0,
+                    }))
+                  }}
+                  required
+                />
+              </div>
+
+              {/* Longitude */}
+              <div className="space-y-2">
+                <Label htmlFor="lng">Longitude *</Label>
+                <Input
+                  id="lng"
+                  type="number"
+                  step="any"
+                  className="appearance-none"
+                  placeholder="Напр. 14.4208"
+                  value={
+                    locationCoords?.lng !== undefined ? locationCoords.lng : ""
+                  }
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value)
+                    setLocationCoords((prev) => ({
+                      lat: prev?.lat ?? 0,
+                      lng: isNaN(value) ? 0 : value,
+                    }))
+                  }}
+                  required
+                />
               </div>
 
               {/* Category */}
