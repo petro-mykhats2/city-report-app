@@ -43,7 +43,7 @@ export function MapPicker({
   const markerRef = useRef<L.Marker | null>(null)
 
   useEffect(() => {
-    if (mapRef.current) {
+    if (mapRef.current && markerCoords.lat !== 0 && markerCoords.lng !== 0) {
       mapRef.current.setView([markerCoords.lat, markerCoords.lng], 15)
     }
   }, [markerCoords])
@@ -52,7 +52,11 @@ export function MapPicker({
     <Card className="h-[300px] relative overflow-hidden">
       <CardContent className="p-0 h-full relative z-0">
         <MapContainer
-          center={[markerCoords.lat, markerCoords.lng]}
+          center={
+            markerCoords.lat !== 0 && markerCoords.lng !== 0
+              ? [markerCoords.lat, markerCoords.lng]
+              : [50.0755, 14.4378] // 🟢 fallback на Прагу
+          }
           zoom={15}
           scrollWheelZoom
           ref={mapRef}
