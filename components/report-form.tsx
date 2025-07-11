@@ -43,10 +43,16 @@ export function ReportForm() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [sendUpdates, setSendUpdates] = useState(false)
-  const [locationCoords, setLocationCoords] = useState<{
-    lat: number
-    lng: number
-  } | null>(null)
+
+  // Use string states for input fields to allow typing decimals smoothly
+  const [latInput, setLatInput] = useState<string>("")
+  const [lngInput, setLngInput] = useState<string>("")
+
+  // Derived state for actual numeric coordinates to be stored/submitted
+  const locationCoords = {
+    lat: parseFloat(latInput) || 0, // Parse to number for submission, default to 0 if NaN
+    lng: parseFloat(lngInput) || 0, // Parse to number for submission, default to 0 if NaN
+  }
 
   const { toast } = useToast()
   const { t } = useTranslation()
@@ -68,14 +74,14 @@ export function ReportForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Validate the *parsed* numeric values before submission
     if (
       !reportType ||
       !title ||
       !description ||
       !selectedLocation ||
       !category ||
-      locationCoords === null ||
-      isNaN(locationCoords.lat) ||
+      isNaN(locationCoords.lat) || // Check parsed numbers
       isNaN(locationCoords.lng)
     ) {
       toast({
@@ -101,7 +107,7 @@ export function ReportForm() {
       views: 0,
       author: name,
       authorAvatar: "/placeholder.svg",
-      status: reportType === "issue" ? "pending" : null, // 👈 нове поле!
+      status: reportType === "issue" ? "pending" : null,
       contact: {
         name,
         email: "test+" + Math.floor(Math.random() * 1000) + "@example.com",
@@ -109,8 +115,8 @@ export function ReportForm() {
       },
       createdAt: serverTimestamp(),
       locationCoords: {
-        lat: locationCoords.lat,
-        lng: locationCoords.lng,
+        lat: locationCoords.lat, // Use the parsed numeric value
+        lng: locationCoords.lng, // Use the parsed numeric value
       },
     }
 
@@ -133,9 +139,11 @@ export function ReportForm() {
       setName("")
       setEmail("")
       setSendUpdates(false)
-      setLocationCoords(null)
+      // Clear the input string states
+      setLatInput("")
+      setLngInput("")
     } catch (error) {
-      console.error("Помилка при відправці в Firestore:", error) // 👈 сюди дивися в консолі
+      console.error("Помилка при відправці в Firestore:", error)
       toast({
         title: t("form.submissionFailedTitle"),
         description: t("form.submissionFailedDescription"),
@@ -232,47 +240,43 @@ export function ReportForm() {
                 {t("form.useCurrentLocation")}
               </Button>
 
-              {/* Latitude */}
+              {/* Latitude (Оновлено для мобільних) */}
               <div className="space-y-2">
                 <Label htmlFor="lat">Latitude *</Label>
                 <Input
                   id="lat"
-                  type="number"
-                  step="any"
-                  className="appearance-none"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="^-?\d*\.?\d*$" // Додано pattern для кращої підтримки мобільних
                   placeholder="Напр. 50.087"
-                  value={
-                    locationCoords?.lat !== undefined ? locationCoords.lat : ""
-                  }
+                  value={latInput}
                   onChange={(e) => {
-                    const value = parseFloat(e.target.value)
-                    setLocationCoords((prev) => ({
-                      lat: isNaN(value) ? 0 : value,
-                      lng: prev?.lng ?? 0,
-                    }))
+                    const value = e.target.value
+                    // Дозволяємо лише цифри, десяткову крапку та знак мінуса
+                    if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+                      setLatInput(value)
+                    }
                   }}
                   required
                 />
               </div>
 
-              {/* Longitude */}
+              {/* Longitude (Оновлено для мобільних) */}
               <div className="space-y-2">
                 <Label htmlFor="lng">Longitude *</Label>
                 <Input
                   id="lng"
-                  type="number"
-                  step="any"
-                  className="appearance-none"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="^-?\d*\.?\d*$" // Додано pattern для кращої підтримки мобільних
                   placeholder="Напр. 14.4208"
-                  value={
-                    locationCoords?.lng !== undefined ? locationCoords.lng : ""
-                  }
+                  value={lngInput}
                   onChange={(e) => {
-                    const value = parseFloat(e.target.value)
-                    setLocationCoords((prev) => ({
-                      lat: prev?.lat ?? 0,
-                      lng: isNaN(value) ? 0 : value,
-                    }))
+                    const value = e.target.value
+                    // Дозволяємо лише цифри, десяткову крапку та знак мінуса
+                    if (/^-?\d*\.?\d*$/.test(value) || value === "") {
+                      setLngInput(value)
+                    }
                   }}
                   required
                 />

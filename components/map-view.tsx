@@ -7,6 +7,8 @@ import { MapPin } from "lucide-react"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import pragueBoundary from "@/public/Praha.json"
+import { collection, getDocs } from "firebase/firestore"
+import { db } from "@/lib/firebase"
 
 // 🛠️ Фікс іконок для Leaflet у Next.js
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
@@ -26,23 +28,38 @@ export function MapView() {
   const [showOverlay, setShowOverlay] = useState(true)
   const mapRef = useRef<L.Map | null>(null)
 
-  const [savedMarkers, setSavedMarkers] = useState<
-    { name: string; address: string; coords: [number, number] }[]
+  const [mapMarkers, setMapMarkers] = useState<
+    { id: string; title: string; description: string; coords: [number, number] }[]
   >([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const saved = localStorage.getItem("locations")
-    if (saved) {
+    const fetchReports = async () => {
+      setLoading(true);
       try {
-        const parsed = JSON.parse(saved)
-        if (Array.isArray(parsed)) {
-          setSavedMarkers(parsed)
-        }
-      } catch (err) {
-        console.error("Неможливо прочитати localStorage:", err)
+        const querySnapshot = await getDocs(collection(db, "reports"));
+        const fetchedMarkers: { id: string; title: string; description: string; coords: [number, number] }[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.locationCoords && typeof data.locationCoords.lat === 'number' && typeof data.locationCoords.lng === 'number') {
+            fetchedMarkers.push({
+              id: doc.id,
+              title: data.title || 'No Title',
+              description: data.description || 'No Description',
+              coords: [data.locationCoords.lat, data.locationCoords.lng],
+            });
+          }
+        });
+        setMapMarkers(fetchedMarkers);
+      } catch (error) {
+        console.error("Error fetching map markers:", error);
+      } finally {
+        setLoading(false);
       }
-    }
-  }, [])
+    };
+
+    fetchReports();
+  }, []);
 
   // ✅ Обробка розміру екрана
   useEffect(() => {
@@ -155,12 +172,12 @@ export function MapView() {
                 <Popup>{marker.label}</Popup>
               </Marker>
             ))} */}
-            {savedMarkers.map((marker, idx) => (
+            {mapMarkers.map((marker, idx) => (
               <Marker key={`saved-${idx}`} position={marker.coords}>
                 <Popup>
-                  <strong>{marker.name}</strong>
+                  <strong>{marker.title}</strong>
                   <br />
-                  {marker.address}
+                  {marker.description}
                 </Popup>
               </Marker>
             ))}
