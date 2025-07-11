@@ -28,6 +28,7 @@ import {
 } from "firebase/firestore"
 import { useTranslation } from "@/i18n"
 import { NominatimAutocomplete } from "./NominatimAutocomplete"
+import { MapPicker } from "./MapPicker"
 
 export function ReportForm() {
   const [reportType, setReportType] = useState<"issue" | "review" | "">("")
@@ -47,7 +48,13 @@ export function ReportForm() {
   const [locationCoords, setLocationCoords] = useState<{
     lat: number
     lng: number
-  }>({ lat: 0, lng: 0 })
+  }>({
+    lat: 50.0755, // 🟢 Прага
+    lng: 14.4378,
+  })
+
+  const [latInput, setLatInput] = useState<string>("")
+  const [lngInput, setLngInput] = useState<string>("")
 
   const { toast } = useToast()
   const { t } = useTranslation()
@@ -241,6 +248,23 @@ export function ReportForm() {
                   }}
                 />
               </div>
+              <MapPicker
+                markerCoords={locationCoords}
+                onCoordsChange={(coords) => {
+                  setLocationCoords(coords)
+
+                  // [опційно] Reverse geocoding:
+                  fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lng}`
+                  )
+                    .then((res) => res.json())
+                    .then((data) => {
+                      if (data.display_name) {
+                        setSelectedLocation(data.display_name)
+                      }
+                    })
+                }}
+              />
 
               {/* Category */}
               <div className="space-y-2">
