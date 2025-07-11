@@ -27,6 +27,7 @@ import {
   getDocs,
 } from "firebase/firestore"
 import { useTranslation } from "@/i18n"
+import { NominatimAutocomplete } from "./NominatimAutocomplete"
 
 export function ReportForm() {
   const [reportType, setReportType] = useState<"issue" | "review" | "">("")
@@ -43,16 +44,10 @@ export function ReportForm() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [sendUpdates, setSendUpdates] = useState(false)
-
-  // Use string states for input fields to allow typing decimals smoothly
-  const [latInput, setLatInput] = useState<string>("")
-  const [lngInput, setLngInput] = useState<string>("")
-
-  // Derived state for actual numeric coordinates to be stored/submitted
-  const locationCoords = {
-    lat: parseFloat(latInput) || 0, // Parse to number for submission, default to 0 if NaN
-    lng: parseFloat(lngInput) || 0, // Parse to number for submission, default to 0 if NaN
-  }
+  const [locationCoords, setLocationCoords] = useState<{
+    lat: number
+    lng: number
+  }>({ lat: 0, lng: 0 })
 
   const { toast } = useToast()
   const { t } = useTranslation()
@@ -80,9 +75,7 @@ export function ReportForm() {
       !title ||
       !description ||
       !selectedLocation ||
-      !category ||
-      isNaN(locationCoords.lat) || // Check parsed numbers
-      isNaN(locationCoords.lng)
+      !category
     ) {
       toast({
         title: t("form.missingFieldsTitle"),
@@ -115,8 +108,8 @@ export function ReportForm() {
       },
       createdAt: serverTimestamp(),
       locationCoords: {
-        lat: locationCoords.lat, // Use the parsed numeric value
-        lng: locationCoords.lng, // Use the parsed numeric value
+        lat: locationCoords.lat,
+        lng: locationCoords.lng,
       },
     }
 
@@ -139,9 +132,6 @@ export function ReportForm() {
       setName("")
       setEmail("")
       setSendUpdates(false)
-      // Clear the input string states
-      setLatInput("")
-      setLngInput("")
     } catch (error) {
       console.error("Помилка при відправці в Firestore:", error)
       toast({
@@ -216,8 +206,7 @@ export function ReportForm() {
                 />
               </div>
 
-              <Label htmlFor="location">{t("form.location")} *</Label>
-              <div className="relative">
+              {/* <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Select
                   required
@@ -235,50 +224,21 @@ export function ReportForm() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
+
+              <Label htmlFor="location">{t("form.location")} *</Label>
+
               <Button type="button" variant="outline" size="sm">
                 {t("form.useCurrentLocation")}
               </Button>
 
-              {/* Latitude (Оновлено для мобільних) */}
               <div className="space-y-2">
-                <Label htmlFor="lat">Latitude *</Label>
-                <Input
-                  id="lat"
-                  type="text"
-                  inputMode="decimal"
-                  pattern="^-?\d*\.?\d*$" // Додано pattern для кращої підтримки мобільних
-                  placeholder="Напр. 50.087"
-                  value={latInput}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    // Дозволяємо лише цифри, десяткову крапку та знак мінуса
-                    if (/^-?\d*\.?\d*$/.test(value) || value === "") {
-                      setLatInput(value)
-                    }
+                <Label htmlFor="address">Адреса *</Label>
+                <NominatimAutocomplete
+                  onSelect={(coords, address) => {
+                    setSelectedLocation(address)
+                    setLocationCoords(coords)
                   }}
-                  required
-                />
-              </div>
-
-              {/* Longitude (Оновлено для мобільних) */}
-              <div className="space-y-2">
-                <Label htmlFor="lng">Longitude *</Label>
-                <Input
-                  id="lng"
-                  type="text"
-                  inputMode="decimal"
-                  pattern="^-?\d*\.?\d*$" // Додано pattern для кращої підтримки мобільних
-                  placeholder="Напр. 14.4208"
-                  value={lngInput}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    // Дозволяємо лише цифри, десяткову крапку та знак мінуса
-                    if (/^-?\d*\.?\d*$/.test(value) || value === "") {
-                      setLngInput(value)
-                    }
-                  }}
-                  required
                 />
               </div>
 
