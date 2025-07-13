@@ -242,6 +242,7 @@ export function ReportForm() {
               <div className="space-y-2">
                 <Label htmlFor="address">Адреса *</Label>
                 <NominatimAutocomplete
+                  value={selectedLocation}
                   onSelect={(coords, address) => {
                     setSelectedLocation(address)
                     setLocationCoords(coords)

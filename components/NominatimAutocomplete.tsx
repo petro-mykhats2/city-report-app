@@ -11,13 +11,22 @@ type NominatimResult = {
 
 export function NominatimAutocomplete({
   onSelect,
+  value = "",
 }: {
   onSelect: (coords: { lat: number; lng: number }, address: string) => void
+  value?: string
 }) {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(value)
   const [results, setResults] = useState<NominatimResult[]>([])
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // 👇 Додаємо цей useEffect — щоб коли value ззовні змінюється, ми оновлювали query
+  useEffect(() => {
+    setQuery(value)
+  }, [value])
+
+  // решта коду без змін...
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
