@@ -2,6 +2,10 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/use-toast"
+
+import { booleanPointInPolygon, point, polygon } from "@turf/turf"
+import pragueBoundary from "@/public/Praha.json"
 
 type NominatimResult = {
   lat: string
@@ -21,12 +25,9 @@ export function NominatimAutocomplete({
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // 👇 Додаємо цей useEffect — щоб коли value ззовні змінюється, ми оновлювали query
   useEffect(() => {
     setQuery(value)
   }, [value])
-
-  // решта коду без змін...
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -50,7 +51,6 @@ export function NominatimAutocomplete({
     return () => clearTimeout(delayDebounce)
   }, [query])
 
-  // Закриття списку при кліку поза ним
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -67,8 +67,28 @@ export function NominatimAutocomplete({
     }
   }, [])
 
+  const isWithinCity = (lat: number, lng: number) => {
+    const pt = point([lng, lat])
+    const cityPolygon = polygon([
+      pragueBoundary.features[0].geometry.coordinates[0].map(
+        ([lng, lat]: number[]) => [lng, lat]
+      ),
+    ])
+    return booleanPointInPolygon(pt, cityPolygon)
+  }
+
   const handleSelect = (result: NominatimResult) => {
     const coords = { lat: parseFloat(result.lat), lng: parseFloat(result.lon) }
+
+    if (!isWithinCity(coords.lat, coords.lng)) {
+      toast({
+        title: "Адреса поза межами міста",
+        description: "Оберіть адресу в межах Праги.",
+        variant: "destructive",
+      })
+      return
+    }
+
     onSelect(coords, result.display_name)
     setQuery(result.display_name)
     setShowDropdown(false)
