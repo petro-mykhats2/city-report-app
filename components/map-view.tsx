@@ -14,6 +14,7 @@ import { db } from "@/lib/firebase"
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
 import markerIcon from "leaflet/dist/images/marker-icon.png"
 import markerShadow from "leaflet/dist/images/marker-shadow.png"
+import MarkerClusterGroup from "react-leaflet-markercluster"
 
 delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -29,37 +30,51 @@ export function MapView() {
   const mapRef = useRef<L.Map | null>(null)
 
   const [mapMarkers, setMapMarkers] = useState<
-    { id: string; title: string; description: string; coords: [number, number] }[]
+    {
+      id: string
+      title: string
+      description: string
+      coords: [number, number]
+    }[]
   >([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchReports = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
-        const querySnapshot = await getDocs(collection(db, "reports"));
-        const fetchedMarkers: { id: string; title: string; description: string; coords: [number, number] }[] = [];
+        const querySnapshot = await getDocs(collection(db, "reports"))
+        const fetchedMarkers: {
+          id: string
+          title: string
+          description: string
+          coords: [number, number]
+        }[] = []
         querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          if (data.locationCoords && typeof data.locationCoords.lat === 'number' && typeof data.locationCoords.lng === 'number') {
+          const data = doc.data()
+          if (
+            data.locationCoords &&
+            typeof data.locationCoords.lat === "number" &&
+            typeof data.locationCoords.lng === "number"
+          ) {
             fetchedMarkers.push({
               id: doc.id,
-              title: data.title || 'No Title',
-              description: data.description || 'No Description',
+              title: data.title || "No Title",
+              description: data.description || "No Description",
               coords: [data.locationCoords.lat, data.locationCoords.lng],
-            });
+            })
           }
-        });
-        setMapMarkers(fetchedMarkers);
+        })
+        setMapMarkers(fetchedMarkers)
       } catch (error) {
-        console.error("Error fetching map markers:", error);
+        console.error("Error fetching map markers:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchReports();
-  }, []);
+    fetchReports()
+  }, [])
 
   // ✅ Обробка розміру екрана
   useEffect(() => {
@@ -172,15 +187,17 @@ export function MapView() {
                 <Popup>{marker.label}</Popup>
               </Marker>
             ))} */}
-            {mapMarkers.map((marker, idx) => (
-              <Marker key={`saved-${idx}`} position={marker.coords}>
-                <Popup>
-                  <strong>{marker.title}</strong>
-                  <br />
-                  {marker.description}
-                </Popup>
-              </Marker>
-            ))}
+            <MarkerClusterGroup>
+              {mapMarkers.map((marker, idx) => (
+                <Marker key={`saved-${idx}`} position={marker.coords}>
+                  <Popup>
+                    <strong>{marker.title}</strong>
+                    <br />
+                    {marker.description}
+                  </Popup>
+                </Marker>
+              ))}
+            </MarkerClusterGroup>
           </MapContainer>
 
           {/* 📱 Мобільна маска */}
