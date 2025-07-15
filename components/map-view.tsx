@@ -15,6 +15,7 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
 import markerIcon from "leaflet/dist/images/marker-icon.png"
 import markerShadow from "leaflet/dist/images/marker-shadow.png"
 import MarkerClusterGroup from "react-leaflet-markercluster"
+import Link from "next/link"
 
 delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -194,6 +195,12 @@ export function MapView() {
                     <strong>{marker.title}</strong>
                     <br />
                     {marker.description}
+                    <Link
+                      href={`/reports/${marker.id}`}
+                      className="text-blue-500 underline"
+                    >
+                      Детальніше
+                    </Link>
                   </Popup>
                 </Marker>
               ))}
