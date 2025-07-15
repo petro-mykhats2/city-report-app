@@ -39,8 +39,13 @@ export function NominatimAutocomplete({
         )
           .then((res) => res.json())
           .then((data) => {
-            setResults(data)
-            setShowDropdown(true)
+            const filtered = data.filter((result: NominatimResult) => {
+              const lat = parseFloat(result.lat)
+              const lng = parseFloat(result.lon)
+              return isWithinCity(lat, lng)
+            })
+            setResults(filtered)
+            setShowDropdown(filtered.length > 0)
           })
       } else {
         setResults([])
