@@ -292,7 +292,7 @@ export function ReportsPage() {
                     <span className="text-sm text-muted-foreground">
                       {report.author}
                     </span>
-                    <Clock className="h-3 w-3 text-muted-foreground" />
+                    {/* <Clock className="h-3 w-3 text-muted-foreground" /> */}
                     <span className="text-sm text-muted-foreground">
                       {formatTimeToNow(
                         report.createdAt.toDate(),

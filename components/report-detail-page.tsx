@@ -32,6 +32,8 @@ import { ReportLocationMap } from "./report-location-map"
 import { SimilarReports } from "./similar-reports"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
+import { formatTimeToNow } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 interface ReportDetailPageProps {
   reportId: string
@@ -44,6 +46,7 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [isFollowing, setIsFollowing] = useState(false)
   const { toast } = useToast()
+  const { i18n } = useTranslation()
 
   useEffect(() => {
     const fetchReport = async () => {
@@ -182,9 +185,6 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
             <div className="lg:col-span-2 space-y-6">
               {/* Report Header */}
               <Card>
-                <pre className="text-xs bg-muted p-4 rounded overflow-x-auto max-w-full">
-                  {JSON.stringify(report, null, 2)}
-                </pre>
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     {/* Type and Status Badges */}
@@ -230,8 +230,11 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                       </div>
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        <span>
-                          {new Date(report.createdAt).toLocaleDateString()}
+                        <span className="text-sm text-muted-foreground">
+                          {formatTimeToNow(
+                            report.createdAt.toDate(),
+                            i18n.language
+                          )}
                         </span>
                       </div>
                       <div className="flex items-center gap-1">

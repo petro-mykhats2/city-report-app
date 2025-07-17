@@ -1,9 +1,12 @@
+export const dynamic = "force-dynamic"
+
 import { ReportDetailPage } from "@/components/report-detail-page"
 
 export default async function ReportDetail({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  return <ReportDetailPage reportId={params.id} />
+  const resolvedParams = await params
+  return <ReportDetailPage reportId={resolvedParams.id} />
 }
