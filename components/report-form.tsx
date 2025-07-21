@@ -23,8 +23,10 @@ import { db } from "@/lib/firebase"
 import {
   collection,
   addDoc,
-  serverTimestamp,
   getDocs,
+  query,
+  where,
+  serverTimestamp,
 } from "firebase/firestore"
 import { useTranslation } from "@/i18n"
 import { NominatimAutocomplete } from "./NominatimAutocomplete"
@@ -76,7 +78,6 @@ export function ReportForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validate the *parsed* numeric values before submission
     if (
       !reportType ||
       !title ||
@@ -92,42 +93,67 @@ export function ReportForm() {
       return
     }
 
-    const newReport = {
-      type: reportType,
-      title,
-      description,
-      location: selectedLocation,
-      category,
-      priority: reportType === "issue" ? priority : null,
-      rating: reportType === "review" ? rating : null,
-      photos,
-      hasPhoto: photos.length > 0,
-      likes: 0,
-      comments: 0,
-      views: 0,
-      author: name,
-      authorAvatar: "/placeholder.svg",
-      status: reportType === "issue" ? "pending" : null,
-      contact: {
-        name,
-        email: "test+" + Math.floor(Math.random() * 1000) + "@example.com",
-        sendUpdates,
-      },
-      createdAt: serverTimestamp(),
-      locationCoords: {
-        lat: locationCoords.lat,
-        lng: locationCoords.lng,
-      },
-    }
-
     try {
+      // 1. Перевірити, чи автор уже існує
+      const authorsRef = collection(db, "authors")
+      const q = query(authorsRef, where("email", "==", email))
+      const querySnapshot = await getDocs(q)
+
+      let authorId
+
+      if (!querySnapshot.empty) {
+        // Якщо автор існує
+        const existingAuthor = querySnapshot.docs[0]
+        authorId = existingAuthor.id
+      } else {
+        // Якщо автора нема — створити
+        const newAuthorRef = await addDoc(authorsRef, {
+          name,
+          email,
+          avatar: "/placeholder.svg",
+          isVerified: false,
+          joinDate: new Date().toISOString(),
+          reportsCount: 0, // або рахуйте окремо потім
+        })
+        authorId = newAuthorRef.id
+      }
+
+      // 2. Додати звіт з authorId
+      const newReport = {
+        type: reportType,
+        title,
+        description,
+        location: selectedLocation,
+        category,
+        priority: reportType === "issue" ? priority : null,
+        rating: reportType === "review" ? rating : null,
+        photos,
+        hasPhoto: photos.length > 0,
+        likes: 0,
+        comments: 0,
+        views: 0,
+        authorId,
+        status: reportType === "issue" ? "pending" : null,
+        contact: {
+          name,
+          email,
+          sendUpdates,
+        },
+        createdAt: serverTimestamp(),
+        locationCoords: {
+          lat: locationCoords.lat,
+          lng: locationCoords.lng,
+        },
+      }
+
       await addDoc(collection(db, "reports"), newReport)
+
       toast({
         title: t("form.submissionSuccessTitle"),
         description: t("form.submissionSuccessDescription"),
       })
 
-      // Очистка форми після успішної відправки
+      // Очистка форми
       setReportType("")
       setPhotos([])
       setRating(0)

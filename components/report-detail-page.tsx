@@ -244,40 +244,55 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                     </div>
 
                     {/* Author */}
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage
-                          src={report.author.avatar || "/placeholder.svg"}
-                          alt={report.author.name}
-                        />
-                        {/* <AvatarFallback>
-                        {report.author.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback> */}
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold">
-                            {report.author.name}
-                          </span>
-                          {report.author.isVerified && (
-                            <Badge variant="secondary" className="text-xs">
-                              Verified
-                            </Badge>
-                          )}
+                    {report.author ? (
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage
+                            src={report.author.avatar || "/placeholder.svg"}
+                            alt={report.author.name || "Unknown"}
+                          />
+                          <AvatarFallback>
+                            {typeof report.author.name === "string"
+                              ? report.author.name
+                                  .split(" ")
+                                  .map((n: string) => n[0])
+                                  .join("")
+                              : "??"}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">
+                              {report.author.name || "Anonymous"}
+                            </span>
+                            {report.author.isVerified && (
+                              <Badge variant="secondary" className="text-xs">
+                                Verified
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Member since{" "}
+                            {report.author.joinDate
+                              ? new Date(
+                                  report.author.joinDate
+                                ).toLocaleDateString()
+                              : "unknown"}{" "}
+                            • {report.author.reportsCount ?? 0} reports
+                          </div>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          Member since {report.author.joinDate} •{" "}
-                          {report.author.reportsCount} reports
-                        </div>
+
+                        <Button variant="outline" size="sm">
+                          <User className="h-4 w-4 mr-2" />
+                          View Profile
+                        </Button>
                       </div>
-                      <Button variant="outline" size="sm">
-                        <User className="h-4 w-4 mr-2" />
-                        View Profile
-                      </Button>
-                    </div>
+                    ) : (
+                      <div className="text-sm text-muted-foreground italic p-3">
+                        Author not found
+                      </div>
+                    )}
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-2 flex-wrap">
