@@ -222,21 +222,19 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                       {report.title}
                     </h1>
 
-                    {/* Location and Meta */}
+                    {/* Location and Meta*/}
                     <div className="flex items-center gap-4 text-muted-foreground flex-wrap">
                       <div className="flex items-center gap-1">
                         <MapPin className="h-4 w-4" />
                         <span className="font-medium">{report.location}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        <span className="text-sm text-muted-foreground">
-                          {formatTimeToNow(
-                            report.createdAt.toDate(),
-                            i18n.language
-                          )}
-                        </span>
-                      </div>
+                      <Calendar className="h-4 w-4" />
+                      <span className="text-sm text-muted-foreground">
+                        {formatTimeToNow(
+                          report.createdAt.toDate(),
+                          i18n.language
+                        )}
+                      </span>
                       <div className="flex items-center gap-1">
                         <Eye className="h-4 w-4" />
                         <span>{report.views} views</span>
@@ -244,42 +242,24 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                     </div>
 
                     {/* Author */}
-                    {report.author ? (
+                    {report.contact ? (
                       <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage
-                            src={report.author.avatar || "/placeholder.svg"}
-                            alt={report.author.name || "Unknown"}
-                          />
                           <AvatarFallback>
-                            {typeof report.author.name === "string"
-                              ? report.author.name
+                            {report.contact.name
+                              ? report.contact.name
                                   .split(" ")
                                   .map((n: string) => n[0])
                                   .join("")
+                                  .toUpperCase()
                               : "??"}
                           </AvatarFallback>
                         </Avatar>
-
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <span className="font-semibold">
-                              {report.author.name || "Anonymous"}
+                              {report.contact.name || "Anonymous"}
                             </span>
-                            {report.author.isVerified && (
-                              <Badge variant="secondary" className="text-xs">
-                                Verified
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            Member since{" "}
-                            {report.author.joinDate
-                              ? new Date(
-                                  report.author.joinDate
-                                ).toLocaleDateString()
-                              : "unknown"}{" "}
-                            • {report.author.reportsCount ?? 0} reports
                           </div>
                         </div>
 
@@ -307,6 +287,7 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                         />
                         {report.likes + (isLiked ? 1 : 0)}
                       </Button>
+
                       <Button
                         variant="outline"
                         size="sm"
@@ -315,6 +296,7 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                         <MessageCircle className="h-4 w-4" />
                         {report.comments}
                       </Button>
+
                       <Button
                         variant="outline"
                         size="sm"
@@ -324,6 +306,7 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                         <Share2 className="h-4 w-4" />
                         Share
                       </Button>
+
                       <Button
                         variant={isBookmarked ? "default" : "outline"}
                         size="sm"
@@ -335,6 +318,7 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                         />
                         {isBookmarked ? "Saved" : "Save"}
                       </Button>
+
                       <Button
                         variant={isFollowing ? "default" : "outline"}
                         size="sm"
