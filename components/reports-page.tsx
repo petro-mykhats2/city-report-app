@@ -166,7 +166,10 @@ export function ReportsPage() {
         : [`/placeholder.svg?height=100&width=100&text=No+Photo`]
 
     return (
-      <Link href={`/reports/${report.id}`} className="text-blue-500 underline">
+      <Link
+        href={`/reports/${report.id}`}
+        className="no-underline text-inherit"
+      >
         <Card
           className={`group hover:shadow-lg transition-all duration-300 cursor-pointer hover:border-primary/20 ${
             isListView ? "mb-4" : ""
@@ -284,9 +287,11 @@ export function ReportsPage() {
                       />
                       <AvatarFallback className="text-xs">
                         {report.author
-                          .split(" ")
-                          .map((n: string) => n[0])
-                          .join("")}
+                          ? report.author
+                              .split(" ")
+                              .map((n: string) => n[0])
+                              .join("")
+                          : "??"}
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-sm text-muted-foreground">
@@ -295,7 +300,9 @@ export function ReportsPage() {
                     {/* <Clock className="h-3 w-3 text-muted-foreground" /> */}
                     <span className="text-sm text-muted-foreground">
                       {formatTimeToNow(
-                        report.createdAt.toDate(),
+                        report.createdAt?.toDate
+                          ? report.createdAt.toDate()
+                          : new Date(report.createdAt),
                         i18n.language
                       )}
                     </span>
