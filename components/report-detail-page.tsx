@@ -34,6 +34,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { formatTimeToNow } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
+import { MapViewer } from "./MapViewer"
 
 interface ReportDetailPageProps {
   reportId: string
@@ -405,11 +406,12 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                 </CardHeader>
                 <CardContent>
                   {/* <ReportLocationMap
-                    coordinates={report.coordinates}
+                    coordinates={report.locationCoords}
                     title={report.title}
                     type={report.type}
                     priority={report.priority}
                   /> */}
+                  <MapViewer coords={report.locationCoords} />
                   <div className="mt-4 p-3 bg-muted/30 rounded-lg">
                     <div className="flex items-start gap-2">
                       <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
