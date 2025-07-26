@@ -105,12 +105,15 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
   }
 
   const handleLike = () => {
-    setIsLiked(!isLiked)
-    toast({
-      title: isLiked ? "Removed like" : "Liked report",
-      description: isLiked
-        ? "You unliked this report"
-        : "Thank you for supporting this report",
+    setIsLiked((prev) => {
+      const newState = !prev
+      toast({
+        title: newState ? "Liked report" : "Removed like",
+        description: newState
+          ? "Thank you for supporting this report"
+          : "You unliked this report",
+      })
+      return newState
     })
   }
 
@@ -405,12 +408,6 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* <ReportLocationMap
-                    coordinates={report.locationCoords}
-                    title={report.title}
-                    type={report.type}
-                    priority={report.priority}
-                  /> */}
                   <MapViewer coords={report.locationCoords} />
                   <div className="mt-4 p-3 bg-muted/30 rounded-lg">
                     <div className="flex items-start gap-2">
@@ -471,104 +468,4 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
       )
     </div>
   )
-
-  // Mock data - in real app this would come from API
-  //   const report = {
-  //     id: reportId,
-  //     type: "issue",
-  //     title: "Large pothole causing vehicle damage on Main Street",
-  //     description: `This deep pothole has been growing larger over the past month and is now causing significant damage to vehicles. Multiple residents have reported tire damage and alignment issues after driving over this section of road.
-
-  // The pothole is approximately 3 feet wide and 8 inches deep, located in the right lane heading eastbound. It's particularly dangerous during rain when it fills with water and becomes less visible to drivers.
-
-  // I've personally witnessed several vehicles swerve dangerously to avoid it, creating a safety hazard for both drivers and pedestrians. This needs immediate attention before someone gets seriously hurt.`,
-  //     location: "Main St & 5th Ave, Downtown",
-  //     coordinates: { lat: 40.7128, lng: -74.006 },
-  //     category: "infrastructure",
-  //     priority: "high",
-  //     status: "pending",
-  //     author: {
-  //       name: "John Doe",
-  //       avatar: "/placeholder.svg?height=40&width=40",
-  //       joinDate: "March 2023",
-  //       reportsCount: 15,
-  //       isVerified: true,
-  //     },
-  //     createdAt: "2024-01-15T10:30:00Z",
-  //     updatedAt: "2024-01-15T14:20:00Z",
-  //     likes: 24,
-  //     comments: 8,
-  //     views: 156,
-  //     photos: [
-  //       "/placeholder.svg?height=400&width=600&text=Pothole+Main+View",
-  //       "/placeholder.svg?height=400&width=600&text=Pothole+Side+View",
-  //       "/placeholder.svg?height=400&width=600&text=Damage+to+Car",
-  //     ],
-  //     tags: ["road-safety", "infrastructure", "urgent"],
-  //     relatedReports: [2, 5, 8],
-  //   }
-
-  // const getPriorityColor = (priority: string) => {
-  //   switch (priority) {
-  //     case "high":
-  //       return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800"
-  //     case "medium":
-  //       return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800"
-  //     case "low":
-  //       return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800"
-  //     default:
-  //       return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400 border-gray-200 dark:border-gray-800"
-  //   }
-  // }
-
-  // const getStatusColor = (status: string) => {
-  //   switch (status) {
-  //     case "resolved":
-  //       return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800"
-  //     case "in-progress":
-  //       return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400 border-blue-200 dark:border-blue-800"
-  //     case "pending":
-  //       return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800"
-  //     default:
-  //       return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400 border-gray-200 dark:border-gray-800"
-  //   }
-  // }
-
-  // const handleLike = () => {
-  //   setIsLiked(!isLiked)
-  //   toast({
-  //     title: isLiked ? "Removed like" : "Liked report",
-  //     description: isLiked
-  //       ? "You unliked this report"
-  //       : "Thank you for supporting this report",
-  //   })
-  // }
-
-  // const handleBookmark = () => {
-  //   setIsBookmarked(!isBookmarked)
-  //   toast({
-  //     title: isBookmarked ? "Removed bookmark" : "Bookmarked",
-  //     description: isBookmarked
-  //       ? "Report removed from bookmarks"
-  //       : "Report saved to your bookmarks",
-  //   })
-  // }
-
-  // const handleFollow = () => {
-  //   setIsFollowing(!isFollowing)
-  //   toast({
-  //     title: isFollowing ? "Unfollowed" : "Following",
-  //     description: isFollowing
-  //       ? "You'll no longer receive updates about this report"
-  //       : "You'll receive notifications when this report is updated",
-  //   })
-  // }
-
-  // const handleShare = () => {
-  //   navigator.clipboard.writeText(window.location.href)
-  //   toast({
-  //     title: "Link copied",
-  //     description: "Report link has been copied to your clipboard",
-  //   })
-  // }
 }
