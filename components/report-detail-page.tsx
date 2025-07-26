@@ -418,9 +418,16 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                           variant="link"
                           size="sm"
                           className="h-auto p-0 text-xs"
+                          asChild
                         >
-                          <ExternalLink className="h-3 w-3 mr-1" />
-                          Open in Maps
+                          <a
+                            href={`https://www.google.com/maps?q=${report.locationCoords?.lat},${report.locationCoords?.lng}&z=17`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            Open in Google Maps
+                          </a>
                         </Button>
                       </div>
                     </div>
