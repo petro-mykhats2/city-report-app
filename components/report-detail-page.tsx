@@ -154,26 +154,16 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">{report.title}</h1>
+    <div className="p-2 sm:p-6 max-w-full">
+      {/* <h1 className="text-xl font-bold mb-4 break-words">{report.title}</h1> */}
       {/* ✅ Тут бачиш все, що приходить */}
-      <pre className="text-sm bg-muted p-4 rounded overflow-x-auto max-w-full">
+      {/* <pre className="text-sm bg-muted p-2 sm:p-4 rounded overflow-x-auto max-w-full">
         {JSON.stringify(report, null, 2)}
-      </pre>
-      {/* Далі — решта твого інтерфейсу */}
-      <ul className="text-sm leading-loose list-disc pl-4">
-        <li>Назва: {report.title}</li>
-        <li>Тип: {report.type}</li>
-        <li>Пріоритет: {report.priority}</li>
-        <li>Статус: {report.status}</li>
-        <li>Адреса: {report.location}</li>
-        <li>Автор: {report.contact?.name || "Невідомо"}</li>
-      </ul>
-      return (
+      </pre> */}
       <div className="min-h-screen bg-background">
         {/* Back Navigation */}
         <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-16 z-40">
-          <div className="container mx-auto px-4 py-3">
+          <div className="container mx-auto px-2 sm:px-4 py-3 max-w-full">
             <Button variant="ghost" size="sm" asChild className="gap-2">
               <Link href="/reports">
                 <ChevronLeft className="h-4 w-4" />
@@ -183,13 +173,13 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
             {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               {/* Report Header */}
-              <Card>
-                <CardContent className="p-6">
+              <Card className="max-w-full">
+                <CardContent className="p-3 sm:p-6">
                   <div className="space-y-4">
                     {/* Type and Status Badges */}
                     <div className="flex items-center gap-2 flex-wrap">
@@ -339,7 +329,7 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
 
               {/* Photos */}
               {report.photos && report.photos.length > 0 && (
-                <Card>
+                <Card className="max-w-full">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Camera className="h-5 w-5" />
@@ -353,7 +343,7 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
               )}
 
               {/* Description */}
-              <Card>
+              <Card className="max-w-full">
                 <CardHeader>
                   <CardTitle>Description</CardTitle>
                 </CardHeader>
@@ -398,9 +388,9 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Location Map */}
-              <Card>
+              <Card className="max-w-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <MapPin className="h-5 w-5" />
@@ -435,7 +425,7 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
                 </CardContent>
               </Card>
               {/* Report Actions */}
-              <Card>
+              <Card className="max-w-full">
                 <CardHeader>
                   <CardTitle>Take Action</CardTitle>
                 </CardHeader>
