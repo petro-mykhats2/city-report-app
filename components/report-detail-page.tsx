@@ -155,11 +155,6 @@ export function ReportDetailPage({ reportId }: ReportDetailPageProps) {
 
   return (
     <div className="p-2 sm:p-6 max-w-full">
-      {/* <h1 className="text-xl font-bold mb-4 break-words">{report.title}</h1> */}
-      {/* ✅ Тут бачиш все, що приходить */}
-      {/* <pre className="text-sm bg-muted p-2 sm:p-4 rounded overflow-x-auto max-w-full">
-        {JSON.stringify(report, null, 2)}
-      </pre> */}
       <div className="min-h-screen bg-background">
         {/* Back Navigation */}
         <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-16 z-40">
