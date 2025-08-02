@@ -22,12 +22,17 @@ import {
   ChevronDown,
   TrendingUp,
 } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { formatTimeToNow } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
-
+import Link from "next/link"
 
 export function ReportsPage() {
   const { t } = useTranslation()
@@ -41,13 +46,15 @@ export function ReportsPage() {
   const { i18n } = useTranslation()
   const currentLang = i18n.language
 
-   
   useEffect(() => {
     const fetchReports = async () => {
       try {
         const q = query(collection(db, "reports"), orderBy("createdAt", "desc"))
         const snapshot = await getDocs(q)
-        const reports = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        const reports = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
         setAllReports(reports)
         console.log("Fetched reports:", reports)
       } catch (error) {
@@ -62,11 +69,31 @@ export function ReportsPage() {
 
   const categories = [
     { id: "all", label: t("reportsPage.allReports"), count: allReports.length },
-    { id: "issue", label: t("reportsPage.issues"), count: allReports.filter((r) => r.type === "issue").length },
-    { id: "review", label: t("reportsPage.reviews"), count: allReports.filter((r) => r.type === "review").length },
-    { id: "infrastructure", label: t("reportsPage.infrastructure"), count: allReports.filter((r) => r.category === "infrastructure").length },
-    { id: "safety", label: t("reportsPage.safety"), count: allReports.filter((r) => r.category === "safety").length },
-    { id: "cleanliness", label: t("reportsPage.cleanliness"), count: allReports.filter((r) => r.category === "cleanliness").length },
+    {
+      id: "issue",
+      label: t("reportsPage.issues"),
+      count: allReports.filter((r) => r.type === "issue").length,
+    },
+    {
+      id: "review",
+      label: t("reportsPage.reviews"),
+      count: allReports.filter((r) => r.type === "review").length,
+    },
+    {
+      id: "infrastructure",
+      label: t("reportsPage.infrastructure"),
+      count: allReports.filter((r) => r.category === "infrastructure").length,
+    },
+    {
+      id: "safety",
+      label: t("reportsPage.safety"),
+      count: allReports.filter((r) => r.category === "safety").length,
+    },
+    {
+      id: "cleanliness",
+      label: t("reportsPage.cleanliness"),
+      count: allReports.filter((r) => r.category === "cleanliness").length,
+    },
   ]
 
   const filteredReports = allReports.filter((report) => {
@@ -76,7 +103,9 @@ export function ReportsPage() {
       report.location.toLowerCase().includes(searchQuery.toLowerCase())
 
     const matchesCategory =
-      activeCategory === "all" || report.type === activeCategory || report.category === activeCategory
+      activeCategory === "all" ||
+      report.type === activeCategory ||
+      report.category === activeCategory
 
     return matchesSearch && matchesCategory
   })
@@ -107,7 +136,7 @@ export function ReportsPage() {
     }
   }
 
-if (loading) {
+  if (loading) {
     return (
       <Card className="h-fit">
         <CardHeader>
@@ -123,7 +152,13 @@ if (loading) {
     )
   }
 
-  const ReportCard = ({ report, isListView = false }: { report: any; isListView?: boolean }) => {
+  const ReportCard = ({
+    report,
+    isListView = false,
+  }: {
+    report: any
+    isListView?: boolean
+  }) => {
     // Підставляємо плейсхолдер, якщо немає фото
     const displayPhotos =
       report.photos && report.photos.length > 0
@@ -131,138 +166,164 @@ if (loading) {
         : [`/placeholder.svg?height=100&width=100&text=No+Photo`]
 
     return (
-          <Card
-        className={`group hover:shadow-lg transition-all duration-300 cursor-pointer hover:border-primary/20 ${
-          isListView ? "mb-4" : ""
-        }`}
+      <Link
+        href={`/reports/${report.id}`}
+        className="no-underline text-inherit"
       >
-        <CardContent className={`p-0 ${isListView ? "flex flex-col md:flex-row" : "flex flex-col h-full"}`}>
-          {/* Image */}
-          {(report.hasPhoto || displayPhotos.length > 0) && (
-            <div className={`relative overflow-hidden ${isListView ? "w-full md:w-48 flex-shrink-0" : "aspect-video w-full"}`}>
-              <img
-                src={displayPhotos[0] || "/placeholder.svg"}
-                alt={report.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute top-3 left-3">
-                <Badge
-                  className={`${
-                    report.type === "issue" ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
-                  } text-white`}
-                >
-                  {report.type === "issue" ? (
-                    <AlertTriangle className="h-3 w-3 mr-1" />
-                  ) : (
-                    <Star className="h-3 w-3 mr-1" />
-                  )}
-                  {t(`reportCard.${report.type}`)}
-                </Badge>
-              </div>
-              {displayPhotos.length > 1 && (
-                <div className="absolute top-3 right-3">
-                  <Badge variant="secondary" className="bg-black/50 text-white">
-                    <Camera className="h-3 w-3 mr-1" />
-                    {displayPhotos.length}
+        <Card
+          className={`group hover:shadow-lg transition-all duration-300 cursor-pointer hover:border-primary/20 ${
+            isListView ? "mb-4" : ""
+          }`}
+        >
+          <CardContent
+            className={`p-0 ${isListView ? "flex flex-col md:flex-row" : "flex flex-col h-full"}`}
+          >
+            {/* Image */}
+            {(report.hasPhoto || displayPhotos.length > 0) && (
+              <div
+                className={`relative overflow-hidden ${isListView ? "w-full md:w-48 flex-shrink-0" : "aspect-video w-full"}`}
+              >
+                <img
+                  src={displayPhotos[0] || "/placeholder.svg"}
+                  alt={report.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute top-3 left-3">
+                  <Badge
+                    className={`${
+                      report.type === "issue"
+                        ? "bg-red-500 hover:bg-red-600"
+                        : "bg-green-500 hover:bg-green-600"
+                    } text-white`}
+                  >
+                    {report.type === "issue" ? (
+                      <AlertTriangle className="h-3 w-3 mr-1" />
+                    ) : (
+                      <Star className="h-3 w-3 mr-1" />
+                    )}
+                    {t(`reportCard.${report.type}`)}
                   </Badge>
                 </div>
-              )}
-            </div>
-          )}
-
-          {/* Content */}
-          <div className="p-4 flex-1 flex flex-col justify-between">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex-1">
-                {!report.hasPhoto && (
-                  <div className="flex items-center gap-2 mb-2">
-                    {report.type === "issue" ? (
-                      <AlertTriangle
-                        className={`h-4 w-4 ${report.priority === "high" ? "text-red-500" : "text-yellow-500"}`}
-                      />
-                    ) : (
-                      <Star className="h-4 w-4 text-green-500" />
-                    )}
-                    <Badge variant="outline">
-                      {t(`reportCard.${report.type}`)}
+                {displayPhotos.length > 1 && (
+                  <div className="absolute top-3 right-3">
+                    <Badge
+                      variant="secondary"
+                      className="bg-black/50 text-white"
+                    >
+                      <Camera className="h-3 w-3 mr-1" />
+                      {displayPhotos.length}
                     </Badge>
                   </div>
                 )}
-                <h3 className="font-semibold text-lg leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
-                  {report.title}
-                </h3>
-                <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{report.description}</p>
               </div>
-            </div>
-
-            {/* Grouped bottom content */}
-            <div className="mt-auto space-y-3">
-              {/* Location */}
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4" />
-                <span>{report.location}</span>
+            )}
+            {/* Content */}
+            <div className="p-4 flex-1 flex flex-col justify-between">
+              {/* Header */}
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex-1">
+                  {!report.hasPhoto && (
+                    <div className="flex items-center gap-2 mb-2">
+                      {report.type === "issue" ? (
+                        <AlertTriangle
+                          className={`h-4 w-4 ${report.priority === "high" ? "text-red-500" : "text-yellow-500"}`}
+                        />
+                      ) : (
+                        <Star className="h-4 w-4 text-green-500" />
+                      )}
+                      <Badge variant="outline">
+                        {t(`reportCard.${report.type}`)}
+                      </Badge>
+                    </div>
+                  )}
+                  <h3 className="font-semibold text-lg leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
+                    {report.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm line-clamp-2 mb-3">
+                    {report.description}
+                  </p>
+                </div>
               </div>
 
-              {/* Badges */}
-              <div className="flex items-center gap-2 flex-wrap">
-                {report.type === "issue" && report.priority && (
-                  <Badge className={getPriorityColor(report.priority)}>
-                    {t(`reportCard.priority.${report.priority}`)}
-                  </Badge>
-                )}
-                {report.type === "issue" && report.status && (
-                  <Badge className={getStatusColor(report.status)}>
-                    {t(`reportCard.status.${report.status}`)}
-                  </Badge>
-                )}
-                {report.type === "review" && report.rating && (
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${i < report.rating ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+              {/* Grouped bottom content */}
+              <div className="mt-auto space-y-3">
+                {/* Location */}
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4" />
+                  <span>{report.location}</span>
+                </div>
+
+                {/* Badges */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {report.type === "issue" && report.priority && (
+                    <Badge className={getPriorityColor(report.priority)}>
+                      {t(`reportCard.priority.${report.priority}`)}
+                    </Badge>
+                  )}
+                  {report.type === "issue" && report.status && (
+                    <Badge className={getStatusColor(report.status)}>
+                      {t(`reportCard.status.${report.status}`)}
+                    </Badge>
+                  )}
+                  {report.type === "review" && report.rating && (
+                    <div className="flex items-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-4 w-4 ${i < report.rating ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage
+                        src={report.authorAvatar || "/placeholder.svg"}
+                        alt={report.author}
                       />
-                    ))}
+                      <AvatarFallback className="text-xs">
+                        {report.author
+                          ? report.author
+                              .split(" ")
+                              .map((n: string) => n[0])
+                              .join("")
+                          : "??"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm text-muted-foreground">
+                      {report.author}
+                    </span>
+                    {/* <Clock className="h-3 w-3 text-muted-foreground" /> */}
+                    <span className="text-sm text-muted-foreground">
+                      {formatTimeToNow(
+                        report.createdAt?.toDate
+                          ? report.createdAt.toDate()
+                          : new Date(report.createdAt),
+                        i18n.language
+                      )}
+                    </span>
                   </div>
-                )}
-              </div>
 
-              {/* Footer */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src={report.authorAvatar || "/placeholder.svg"} alt={report.author} />
-                    <AvatarFallback className="text-xs">
-                      {report.author
-                        .split(" ")
-                        .map((n: string) => n[0])
-                        .join("")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm text-muted-foreground">{report.author}</span>
-                  <Clock className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">
-                    {formatTimeToNow(report.createdAt.toDate(), i18n.language)}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <ThumbsUp className="h-4 w-4" />
-                    <span>{report.likes}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="h-4 w-4" />
-                    <span>{report.comments}</span>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <ThumbsUp className="h-4 w-4" />
+                      <span>{report.likes}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="h-4 w-4" />
+                      <span>{report.comments}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
+          </CardContent>
+        </Card>
+      </Link>
     )
   }
 
@@ -270,10 +331,10 @@ if (loading) {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">{t("reportsPage.communityReports")}</h1>
-        <p className="text-muted-foreground">
-        {t("reportsPage.description")}
-        </p>
+        <h1 className="text-3xl font-bold mb-2">
+          {t("reportsPage.communityReports")}
+        </h1>
+        <p className="text-muted-foreground">{t("reportsPage.description")}</p>
       </div>
 
       {/* Search and Controls */}
@@ -292,10 +353,18 @@ if (loading) {
         {/* Controls */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-2">
-            <Button variant={viewMode === "grid" ? "default" : "outline"} size="sm" onClick={() => setViewMode("grid")}>
+            <Button
+              variant={viewMode === "grid" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("grid")}
+            >
               <Grid3X3 className="h-4 w-4" />
             </Button>
-            <Button variant={viewMode === "list" ? "default" : "outline"} size="sm" onClick={() => setViewMode("list")}>
+            <Button
+              variant={viewMode === "list" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("list")}
+            >
               <List className="h-4 w-4" />
             </Button>
           </div>
@@ -305,14 +374,25 @@ if (loading) {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  {t("reportsPage.sortBy")}: {sortBy === "recent" ? t("reportsPage.mostRecent") : sortBy === "popular" ? t("reportsPage.mostPopular") : t("reportsPage.oldestFirst")}
+                  {t("reportsPage.sortBy")}:{" "}
+                  {sortBy === "recent"
+                    ? t("reportsPage.mostRecent")
+                    : sortBy === "popular"
+                      ? t("reportsPage.mostPopular")
+                      : t("reportsPage.oldestFirst")}
                   <ChevronDown className="h-4 w-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setSortBy("recent")}>{t("reportsPage.mostRecent")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy("popular")}>{t("reportsPage.mostPopular")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy("oldest")}>{t("reportsPage.oldestFirst")}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("recent")}>
+                  {t("reportsPage.mostRecent")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("popular")}>
+                  {t("reportsPage.mostPopular")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("oldest")}>
+                  {t("reportsPage.oldestFirst")}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -320,7 +400,11 @@ if (loading) {
       </div>
 
       {/* Category Tabs */}
-      <Tabs value={activeCategory} onValueChange={setActiveCategory} className="mb-6">
+      <Tabs
+        value={activeCategory}
+        onValueChange={setActiveCategory}
+        className="mb-6"
+      >
         <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-auto p-1">
           {categories.map((category) => (
             <TabsTrigger
@@ -340,16 +424,28 @@ if (loading) {
           {/* Results Count */}
           <div className="mb-4">
             <p className="text-sm text-muted-foreground">
-             {t("reportsPage.showingReports", { count: filteredReports.length })}
-             {searchQuery && ` for "${searchQuery}"`}
+              {t("reportsPage.showingReports", {
+                count: filteredReports.length,
+              })}
+              {searchQuery && ` for "${searchQuery}"`}
             </p>
           </div>
 
           {/* Reports Grid/List */}
           {filteredReports.length > 0 ? (
-            <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  : "space-y-4"
+              }
+            >
               {filteredReports.map((report) => (
-                <ReportCard key={report.id} report={report} isListView={viewMode === "list"} />
+                <ReportCard
+                  key={report.id}
+                  report={report}
+                  isListView={viewMode === "list"}
+                />
               ))}
             </div>
           ) : (
@@ -357,8 +453,12 @@ if (loading) {
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
                 <Search className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">{t("reportsPage.noReportsFound")}</h3>
-              <p className="text-muted-foreground mb-4">{t("reportsPage.tryAdjustingSearch")}</p>
+              <h3 className="text-lg font-semibold mb-2">
+                {t("reportsPage.noReportsFound")}
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                {t("reportsPage.tryAdjustingSearch")}
+              </p>
               <Button
                 variant="outline"
                 onClick={() => {
@@ -366,7 +466,7 @@ if (loading) {
                   setActiveCategory("all")
                 }}
               >
-                 {t("reportsPage.clearFilters")}
+                {t("reportsPage.clearFilters")}
               </Button>
             </div>
           )}

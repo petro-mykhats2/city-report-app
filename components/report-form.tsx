@@ -8,14 +8,29 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { MapPin, AlertTriangle, Star, X, Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { db } from "@/lib/firebase"
-import { collection, addDoc, serverTimestamp, getDocs } from "firebase/firestore"
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  serverTimestamp,
+} from "firebase/firestore"
 import { useTranslation } from "@/i18n"
+import { NominatimAutocomplete } from "./NominatimAutocomplete"
+import { MapPicker } from "./MapPicker"
 
 export function ReportForm() {
   const [reportType, setReportType] = useState<"issue" | "review" | "">("")
@@ -32,6 +47,16 @@ export function ReportForm() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [sendUpdates, setSendUpdates] = useState(false)
+  const [locationCoords, setLocationCoords] = useState<{
+    lat: number
+    lng: number
+  }>({
+    lat: 50.0755, // 🟢 Прага
+    lng: 14.4378,
+  })
+
+  const [latInput, setLatInput] = useState<string>("")
+  const [lngInput, setLngInput] = useState<string>("")
 
   const { toast } = useToast()
   const { t } = useTranslation()
@@ -53,7 +78,13 @@ export function ReportForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!reportType || !title || !description || !selectedLocation || !category) {
+    if (
+      !reportType ||
+      !title ||
+      !description ||
+      !selectedLocation ||
+      !category
+    ) {
       toast({
         title: t("form.missingFieldsTitle"),
         description: t("form.missingFieldsDescription"),
@@ -62,38 +93,67 @@ export function ReportForm() {
       return
     }
 
-   const newReport = {
-      type: reportType,
-      title,
-      description,
-      location: selectedLocation,
-      category,
-      priority: reportType === "issue" ? priority : null,
-      rating: reportType === "review" ? rating : null,
-      photos,
-      hasPhoto: photos.length > 0,
-      likes: 0,
-      comments: 0,
-      views: 0,
-      author: name,
-      authorAvatar: "/placeholder.svg",
-      status: reportType === "issue" ? "pending" : null, // 👈 нове поле!
-      contact: {
-        name,
-        email: "test+" + Math.floor(Math.random() * 1000) + "@example.com",
-        sendUpdates,
-      },
-      createdAt: serverTimestamp(),
-    }
-
-
     try {
+      // 1. Перевірити, чи автор уже існує
+      const authorsRef = collection(db, "authors")
+      const q = query(authorsRef, where("email", "==", email))
+      const querySnapshot = await getDocs(q)
+
+      let authorId
+
+      if (!querySnapshot.empty) {
+        // Якщо автор існує
+        const existingAuthor = querySnapshot.docs[0]
+        authorId = existingAuthor.id
+      } else {
+        // Якщо автора нема — створити
+        const newAuthorRef = await addDoc(authorsRef, {
+          name,
+          email,
+          avatar: "/placeholder.svg",
+          isVerified: false,
+          joinDate: new Date().toISOString(),
+          reportsCount: 0, // або рахуйте окремо потім
+        })
+        authorId = newAuthorRef.id
+      }
+
+      // 2. Додати звіт з authorId
+      const newReport = {
+        type: reportType,
+        title,
+        description,
+        location: selectedLocation,
+        category,
+        priority: reportType === "issue" ? priority : null,
+        rating: reportType === "review" ? rating : null,
+        photos,
+        hasPhoto: photos.length > 0,
+        likes: 0,
+        comments: 0,
+        views: 0,
+        authorId,
+        status: reportType === "issue" ? "pending" : null,
+        contact: {
+          name,
+          email,
+          sendUpdates,
+        },
+        createdAt: serverTimestamp(),
+        locationCoords: {
+          lat: locationCoords.lat,
+          lng: locationCoords.lng,
+        },
+      }
+
       await addDoc(collection(db, "reports"), newReport)
+
       toast({
         title: t("form.submissionSuccessTitle"),
         description: t("form.submissionSuccessDescription"),
       })
-      // Очистка форми після успішної відправки
+
+      // Очистка форми
       setReportType("")
       setPhotos([])
       setRating(0)
@@ -106,6 +166,7 @@ export function ReportForm() {
       setEmail("")
       setSendUpdates(false)
     } catch (error) {
+      console.error("Помилка при відправці в Firestore:", error)
       toast({
         title: t("form.submissionFailedTitle"),
         description: t("form.submissionFailedDescription"),
@@ -115,7 +176,10 @@ export function ReportForm() {
   }
 
   const addPhoto = () => {
-    setPhotos([...photos, `/placeholder.svg?height=100&width=100&text=Photo${photos.length + 1}`])
+    setPhotos([
+      ...photos,
+      `/placeholder.svg?height=100&width=100&text=Photo${photos.length + 1}`,
+    ])
   }
 
   const removePhoto = (index: number) => {
@@ -131,8 +195,15 @@ export function ReportForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Report Type */}
           <div className="space-y-3">
-            <Label className="text-base font-medium">{t("form.reportTypeLabel")}</Label>
-            <RadioGroup value={reportType} onValueChange={(value) => setReportType(value as "issue" | "review" | "")}>
+            <Label className="text-base font-medium">
+              {t("form.reportTypeLabel")}
+            </Label>
+            <RadioGroup
+              value={reportType}
+              onValueChange={(value) =>
+                setReportType(value as "issue" | "review" | "")
+              }
+            >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="issue" id="issue" />
                 <Label htmlFor="issue" className="flex items-center gap-2">
@@ -157,35 +228,70 @@ export function ReportForm() {
                 <Label htmlFor="title">{t("form.title")} *</Label>
                 <Input
                   id="title"
-                  placeholder={reportType === "issue" ? t("form.issuePlaceholder") : t("form.reviewPlaceholder")}
+                  placeholder={
+                    reportType === "issue"
+                      ? t("form.issuePlaceholder")
+                      : t("form.reviewPlaceholder")
+                  }
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
 
-              {/* Location */}
+              {/* <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Select
+                  required
+                  onValueChange={setSelectedLocation}
+                  value={selectedLocation}
+                >
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder={t("form.locationPlaceholder")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities.map((city) => (
+                      <SelectItem key={city.id} value={city.name}>
+                        {city.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div> */}
+
+              <Label htmlFor="location">{t("form.location")} *</Label>
+
+              <Button type="button" variant="outline" size="sm">
+                {t("form.useCurrentLocation")}
+              </Button>
+
               <div className="space-y-2">
-                <Label htmlFor="location">{t("form.location")} *</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Select required onValueChange={setSelectedLocation} value={selectedLocation}>
-                    <SelectTrigger className="pl-10">
-                      <SelectValue placeholder={t("form.locationPlaceholder")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city.id} value={city.name}>
-                          {city.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button type="button" variant="outline" size="sm">
-                  {t("form.useCurrentLocation")}
-                </Button>
+                <Label htmlFor="address">Адреса *</Label>
+                <NominatimAutocomplete
+                  value={selectedLocation}
+                  onSelect={(coords, address) => {
+                    setSelectedLocation(address)
+                    setLocationCoords(coords)
+                  }}
+                />
               </div>
+              <MapPicker
+                markerCoords={locationCoords}
+                onCoordsChange={(coords) => {
+                  setLocationCoords(coords)
+
+                  // [опційно] Reverse geocoding:
+                  fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lng}`
+                  )
+                    .then((res) => res.json())
+                    .then((data) => {
+                      if (data.display_name) {
+                        setSelectedLocation(data.display_name)
+                      }
+                    })
+                }}
+              />
 
               {/* Category */}
               <div className="space-y-2">
@@ -197,21 +303,45 @@ export function ReportForm() {
                   <SelectContent>
                     {reportType === "issue" ? (
                       <>
-                        <SelectItem value="infrastructure">{t("form.categories.infrastructure")}</SelectItem>
-                        <SelectItem value="safety">{t("form.categories.safety")}</SelectItem>
-                        <SelectItem value="cleanliness">{t("form.categories.cleanliness")}</SelectItem>
-                        <SelectItem value="transportation">{t("form.categories.transportation")}</SelectItem>
-                        <SelectItem value="utilities">{t("form.categories.utilities")}</SelectItem>
-                        <SelectItem value="other">{t("form.categories.other")}</SelectItem>
+                        <SelectItem value="infrastructure">
+                          {t("form.categories.infrastructure")}
+                        </SelectItem>
+                        <SelectItem value="safety">
+                          {t("form.categories.safety")}
+                        </SelectItem>
+                        <SelectItem value="cleanliness">
+                          {t("form.categories.cleanliness")}
+                        </SelectItem>
+                        <SelectItem value="transportation">
+                          {t("form.categories.transportation")}
+                        </SelectItem>
+                        <SelectItem value="utilities">
+                          {t("form.categories.utilities")}
+                        </SelectItem>
+                        <SelectItem value="other">
+                          {t("form.categories.other")}
+                        </SelectItem>
                       </>
                     ) : (
                       <>
-                        <SelectItem value="restaurant">{t("form.categories.restaurant")}</SelectItem>
-                        <SelectItem value="park">{t("form.categories.park")}</SelectItem>
-                        <SelectItem value="shopping">{t("form.categories.shopping")}</SelectItem>
-                        <SelectItem value="service">{t("form.categories.service")}</SelectItem>
-                        <SelectItem value="attraction">{t("form.categories.attraction")}</SelectItem>
-                        <SelectItem value="other">{t("form.categories.other")}</SelectItem>
+                        <SelectItem value="restaurant">
+                          {t("form.categories.restaurant")}
+                        </SelectItem>
+                        <SelectItem value="park">
+                          {t("form.categories.park")}
+                        </SelectItem>
+                        <SelectItem value="shopping">
+                          {t("form.categories.shopping")}
+                        </SelectItem>
+                        <SelectItem value="service">
+                          {t("form.categories.service")}
+                        </SelectItem>
+                        <SelectItem value="attraction">
+                          {t("form.categories.attraction")}
+                        </SelectItem>
+                        <SelectItem value="other">
+                          {t("form.categories.other")}
+                        </SelectItem>
                       </>
                     )}
                   </SelectContent>
@@ -224,12 +354,20 @@ export function ReportForm() {
                   <Label>{t("form.priority")}</Label>
                   <Select value={priority} onValueChange={setPriority}>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("form.priorityPlaceholder")} />
+                      <SelectValue
+                        placeholder={t("form.priorityPlaceholder")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="low">{t("form.priorityLow")}</SelectItem>
-                      <SelectItem value="medium">{t("form.priorityMedium")}</SelectItem>
-                      <SelectItem value="high">{t("form.priorityHigh")}</SelectItem>
+                      <SelectItem value="low">
+                        {t("form.priorityLow")}
+                      </SelectItem>
+                      <SelectItem value="medium">
+                        {t("form.priorityMedium")}
+                      </SelectItem>
+                      <SelectItem value="high">
+                        {t("form.priorityHigh")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -241,7 +379,12 @@ export function ReportForm() {
                   <Label>{t("form.rating")}</Label>
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <button key={star} type="button" onClick={() => setRating(star)} className="p-1">
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setRating(star)}
+                        className="p-1"
+                      >
                         <Star
                           className={`h-6 w-6 ${star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"}`}
                         />
@@ -256,7 +399,11 @@ export function ReportForm() {
                 <Label htmlFor="description">{t("form.description")} *</Label>
                 <Textarea
                   id="description"
-                  placeholder={reportType === "issue" ? t("form.issueDescription") : t("form.reviewDescription")}
+                  placeholder={
+                    reportType === "issue"
+                      ? t("form.issueDescription")
+                      : t("form.reviewDescription")
+                  }
                   rows={4}
                   required
                   value={description}
@@ -291,16 +438,22 @@ export function ReportForm() {
                       className="h-24 border-2 border-dashed border-muted-foreground/25 rounded-lg flex flex-col items-center justify-center hover:border-muted-foreground/50 transition-colors"
                     >
                       <Plus className="h-6 w-6 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground mt-1">{t("form.addPhoto")}</span>
+                      <span className="text-xs text-muted-foreground mt-1">
+                        {t("form.addPhoto")}
+                      </span>
                     </button>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground">{t("form.maxPhotosInfo")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("form.maxPhotosInfo")}
+                </p>
               </div>
 
               {/* Contact Information */}
               <div className="space-y-3">
-                <Label className="text-base font-medium">{t("form.contactInfo")}</Label>
+                <Label className="text-base font-medium">
+                  {t("form.contactInfo")}
+                </Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">{t("form.name")}</Label>
@@ -313,7 +466,7 @@ export function ReportForm() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">{t("form.email")}</Label>
-                   <Input
+                    <Input
                       id="email"
                       type="email"
                       placeholder={t("form.email")}
@@ -321,7 +474,7 @@ export function ReportForm() {
                       disabled
                     />
                     <p className="text-xs text-muted-foreground">
-                       {t("form.emailNote")}
+                      {t("form.emailNote")}
                     </p>
                   </div>
                 </div>
@@ -329,7 +482,9 @@ export function ReportForm() {
                   <Checkbox
                     id="updates"
                     checked={sendUpdates}
-                    onCheckedChange={(checked) => setSendUpdates(Boolean(checked))}
+                    onCheckedChange={(checked) =>
+                      setSendUpdates(Boolean(checked))
+                    }
                   />
                   <Label htmlFor="updates" className="text-sm">
                     {t("form.updates")}
