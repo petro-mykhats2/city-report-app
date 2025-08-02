@@ -1,6 +1,7 @@
 {
-    "hero.title": "Improve Your City, {{action}}",
-    "hero.action": "One Report at a Time",
+    "hero.titleStart": "Improve Your City, ",
+    "hero.titleHighlight": "One Report",
+    "hero.titleEnd": " at a Time",
     "hero.description": "Share reviews, report issues, and help make your community better. Connect with neighbors and local authorities to create positive change.",
     "hero.explore": "Explore Map",
     "hero.submit": "Submit Report",
@@ -13,7 +14,113 @@
     "header": {
         "home": "Home",
         "map": "Map",
-        "report": "Report",
+        "reports": "Community Reports",
+        "report": "New Report",
         "dashboard": "Dashboard"
+    },
+    "signIn": "Sign In",
+    "form": {
+        "reportTitle": "Submit a New Report",
+        "reportTypeLabel": "What would you like to report?",
+        "issue": "Report an Issue",
+        "review": "Share a Review/Tip",
+        "title": "Title",
+        "location": "Location",
+        "useCurrentLocation": "Use Current Location",
+        "category": "Category",
+        "locationPlaceholder": "Select a city",
+        "categoryPlaceholder": "Select a category",
+        "priorityPlaceholder": "Select priority",
+        "priority": "Priority Level",
+        "rating": "Rating",
+        "description": "Description",
+        "photos": "Photos",
+        "addPhoto": "Add Photo",
+        "maxPhotosInfo": "Add up to 5 photos to help illustrate your report",
+        "contactInfo": "Contact Information (Optional)",
+        "name": "Name",
+        "email": "Email",
+        "emailNote": "This field is currently not used. A random email address will be saved during testing.",
+        "updates": "Send me updates about this report",
+        "submit": "Submit Report",
+        "saveDraft": "Save as Draft",
+        "issuePlaceholder": "Brief description of the issue",
+        "reviewPlaceholder": "What's great about this place?",
+        "issueDescription": "Provide detailed information about the issue...",
+        "reviewDescription": "Share your experience and tips...",
+        "priorityLow": "Low - Minor inconvenience",
+        "priorityMedium": "Medium - Needs attention",
+        "priorityHigh": "High - Safety concern",
+        "submissionFailedTitle": "Submission failed",
+        "submissionFailedDescription": "Please try again later.",
+        "submissionSuccessTitle": "Report Submitted!",
+        "submissionSuccessDescription": "Thank you for helping improve our city.",
+        "categories": {
+            "infrastructure": "Infrastructure",
+            "safety": "Safety",
+            "cleanliness": "Cleanliness",
+            "transportation": "Transportation",
+            "utilities": "Utilities",
+            "restaurant": "Restaurant/Cafe",
+            "park": "Park/Recreation",
+            "shopping": "Shopping",
+            "service": "Service",
+            "attraction": "Attraction",
+            "other": "Other"
+        }
+    },
+    "reportPage": {
+        "title": "Submit a Report",
+        "description": "Help improve your city by reporting issues or sharing positive experiences"
+    },
+    "reportsPage": {
+        "communityReports": "Community Reports",
+        "description": "Discover what's happening in your community and contribute to making it better",
+        "searchPlaceholder": "Search reports, locations, or categories...",
+        "sortBy": "Sort by",
+        "mostRecent": "Most Recent",
+        "mostPopular": "Most Popular",
+        "oldestFirst": "Oldest First",
+        "allReports": "All Reports",
+        "issues": "Issues",
+        "reviews": "Reviews",
+        "infrastructure": "Infrastructure",
+        "safety": "Safety",
+        "cleanliness": "Cleanliness",
+        "showingReports": "Showing {{count}} report(s)",
+        "forSearch": "for \"{{search}}\"",
+        "noReportsFound": "No reports found",
+        "tryAdjustingSearch": "Try adjusting your search terms or filters",
+        "clearFilters": "Clear filters",
+        "loadMoreReports": "Load More Reports"
+    },
+    "reportCard": {
+        "issue": "Issue",
+        "review": "Review",
+        "priority": {
+            "high": "High priority",
+            "medium": "Medium priority",
+            "low": "Low priority"
+        },
+        "status": {
+            "pending": "Pending",
+            "in-progress": "In Progress",
+            "resolved": "Resolved"
+        }
+    },
+    "mapPage": {
+        "title": "City Map",
+        "description": "Explore reports and reviews from your community"
+    },
+    "recentReports": {
+        "title": "Recent Activity",
+        "viewAll": "View All Reports",
+        "loading": "Loading...",
+        "loadingMessage": "Fetching the latest reports...",
+        "status": {
+            "pending": "Pending",
+            "resolved": "Resolved",
+            "inProgress": "In Progress"
+        }
     }
 }

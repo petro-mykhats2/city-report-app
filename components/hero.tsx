@@ -1,21 +1,42 @@
 'use client'
 
+import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { db } from "@/lib/firebase"
+import { collection, getDocs } from "firebase/firestore"
 import { ArrowRight, MapPin, MessageSquare, Camera } from "lucide-react"
 import Link from "next/link"
-import { useTranslation } from "@/i18n" // шлях до твого i18n.ts
+import { useTranslation } from "@/i18n"
 
 export function Hero() {
   const { t } = useTranslation()
+  const [cities, setCities] = useState<{ id: string; name: string }[]>([])
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      const citiesCollectionRef = collection(db, "cities")
+      const citySnapshot = await getDocs(citiesCollectionRef)
+      const cityList = citySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name,
+      }))
+      setCities(cityList)
+    }
+
+    fetchCities()
+  }, [])
 
   return (
     <section className="relative py-20 lg:py-32 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-            {t("hero.title", { action: t("hero.action") })}
-          </h1>
+         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          {t("hero.titleStart")}
+          <span className="text-primary">{t("hero.titleHighlight")}</span>
+          {t("hero.titleEnd")}
+        </h1>
+
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             {t("hero.description")}
           </p>
@@ -54,6 +75,22 @@ export function Hero() {
               <p className="text-sm text-muted-foreground">{t("hero.feature3.text")}</p>
             </div>
           </div>
+
+          {cities.length > 0 && (
+            <div className="mt-12">
+              <h3 className="text-2xl font-semibold mb-4">Cities we're in:</h3>
+              <div className="flex flex-wrap justify-center gap-3">
+                {cities.map((city) => (
+                  <span
+                    key={city.id}
+                    className="bg-white/30 px-4 py-2 rounded-full text-lg font-medium shadow-lg backdrop-blur-sm"
+                  >
+                    {city.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

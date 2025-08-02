@@ -1,9 +1,10 @@
 {
-    "hero.title": "Zlepšete své město, {{action}}",
-    "hero.action": "jedním hlášením",
+    "hero.titleStart": "Zlepši své město ",
+    "hero.titleHighlight": "jedním hlášením",
+    "hero.titleEnd": " – právě teď",
     "hero.description": "Sdílejte recenze, hlaste problémy a pomáhejte zlepšovat svou komunitu. Spojte se se sousedy a místními úřady a vytvořte pozitivní změnu.",
     "hero.explore": "Zobrazit mapu",
-    "hero.submit": "Odeslat hlášení",
+    "hero.submit": "Nové hlášení",
     "hero.feature1.title": "Podle lokace",
     "hero.feature1.text": "Připněte hlášení ke konkrétním místům pro lepší informovanost komunity",
     "hero.feature2.title": "Iniciativa komunity",
@@ -13,7 +14,113 @@
     "header": {
         "home": "Domů",
         "map": "Mapa",
-        "report": "Hlášení",
+        "reports": "Co říkají obyvatelé",
+        "report": "Odeslat hlášení",
         "dashboard": "Panel"
+    },
+    "signIn": "Přihlásit se",
+    "form": {
+        "reportTitle": "Odeslat nové hlášení",
+        "reportTypeLabel": "Co chcete nahlásit?",
+        "issue": "Nahlásit problém",
+        "review": "Sdílet recenzi / tip",
+        "title": "Název",
+        "location": "Lokalita",
+        "useCurrentLocation": "Použít aktuální polohu",
+        "category": "Kategorie",
+        "locationPlaceholder": "Vyberte město",
+        "categoryPlaceholder": "Vyberte kategorii",
+        "priorityPlaceholder": "Vyberte prioritu",
+        "priority": "Úroveň priority",
+        "rating": "Hodnocení",
+        "description": "Popis",
+        "photos": "Fotky",
+        "addPhoto": "Přidat fotku",
+        "maxPhotosInfo": "Přidejte až 5 fotek pro lepší ilustraci hlášení",
+        "contactInfo": "Kontaktní informace (nepovinné)",
+        "name": "Jméno",
+        "email": "E-mail",
+        "emailNote": "Toto pole se momentálně nepoužívá. Během testování bude uložena náhodná e-mailová adresa.",
+        "updates": "Posílat mi aktualizace k tomuto hlášení",
+        "submit": "Odeslat hlášení",
+        "saveDraft": "Uložit jako koncept",
+        "issuePlaceholder": "Stručný popis problému",
+        "reviewPlaceholder": "Co je na tomto místě skvělé?",
+        "issueDescription": "Uveďte podrobné informace o problému...",
+        "reviewDescription": "Sdílejte své zkušenosti a tipy...",
+        "priorityLow": "Nízká – Drobné nepohodlí",
+        "priorityMedium": "Střední – Vyžaduje pozornost",
+        "priorityHigh": "Vysoká – Bezpečnostní problém",
+        "submissionFailedTitle": "Odeslání se nezdařilo",
+        "submissionFailedDescription": "Zkuste to prosím znovu později.",
+        "submissionSuccessTitle": "Hlášení odesláno!",
+        "submissionSuccessDescription": "Děkujeme za pomoc při zlepšování našeho města.",
+        "categories": {
+            "infrastructure": "Infrastruktura",
+            "safety": "Bezpečnost",
+            "cleanliness": "Čistota",
+            "transportation": "Doprava",
+            "utilities": "Služby",
+            "restaurant": "Restaurace / Kavárna",
+            "park": "Park / Rekreace",
+            "shopping": "Nakupování",
+            "service": "Služba",
+            "attraction": "Památka / Atrakce",
+            "other": "Jiné"
+        }
+    },
+    "reportPage": {
+        "title": "Odeslat hlášení",
+        "description": "Pomozte zlepšit své město hlášením problémů nebo sdílením pozitivních zkušeností"
+    },
+    "reportsPage": {
+        "communityReports": "Zprávy komunity",
+        "description": "Zjistěte, co se děje ve vaší komunitě, a přispějte k jejímu zlepšení",
+        "searchPlaceholder": "Hledat zprávy, místa nebo kategorie...",
+        "sortBy": "Seřadit podle",
+        "mostRecent": "Nejnovější",
+        "mostPopular": "Nejoblíbenější",
+        "oldestFirst": "Nejstarší první",
+        "allReports": "Všechny zprávy",
+        "issues": "Problémy",
+        "reviews": "Recenze",
+        "infrastructure": "Infrastruktura",
+        "safety": "Bezpečnost",
+        "cleanliness": "Čistota",
+        "showingReports": "Zobrazeno {{count}} zpráv",
+        "forSearch": "pro \"{{search}}\"",
+        "noReportsFound": "Žádné zprávy nenalezeny",
+        "tryAdjustingSearch": "Zkuste upravit hledané výrazy nebo filtry",
+        "clearFilters": "Vymazat filtry",
+        "loadMoreReports": "Načíst další zprávy"
+    },
+    "reportCard": {
+        "issue": "Problém",
+        "review": "Recenze",
+        "priority": {
+            "high": "Vysoká priorita",
+            "medium": "Střední priorita",
+            "low": "Nízká priorita"
+        },
+        "status": {
+            "pending": "Čeká na vyřízení",
+            "in-progress": "Probíhá",
+            "resolved": "Vyřešeno"
+        }
+    },
+    "mapPage": {
+        "title": "Městská mapa",
+        "description": "Prozkoumejte zprávy a recenze od vaší komunity"
+    },
+    "recentReports": {
+        "title": "Nedávná aktivita",
+        "viewAll": "Zobrazit všechny hlášení",
+        "loading": "Načítání...",
+        "loadingMessage": "Načítají se poslední hlášení...",
+        "status": {
+            "pending": "Čeká",
+            "resolved": "Vyřešeno",
+            "inProgress": "Probíhá"
+        }
     }
 }
