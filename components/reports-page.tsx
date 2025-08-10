@@ -286,8 +286,8 @@ export function ReportsPage() {
                         alt={report.author}
                       />
                       <AvatarFallback className="text-xs">
-                        {report.author
-                          ? report.author
+                        {report.contact.name
+                          ? report.contact.name
                               .split(" ")
                               .map((n: string) => n[0])
                               .join("")
@@ -295,7 +295,7 @@ export function ReportsPage() {
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-sm text-muted-foreground">
-                      {report.author}
+                      {report.contact.name || "Anonymous"}
                     </span>
                     {/* <Clock className="h-3 w-3 text-muted-foreground" /> */}
                     <span className="text-sm text-muted-foreground">
