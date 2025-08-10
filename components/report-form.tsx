@@ -30,7 +30,12 @@ import {
 } from "firebase/firestore"
 import { useTranslation } from "@/i18n"
 import { NominatimAutocomplete } from "./NominatimAutocomplete"
-import { MapPicker } from "./MapPicker"
+import dynamic from "next/dynamic"
+
+const MapPicker = dynamic(
+  () => import("./MapPicker").then((mod) => mod.MapPicker),
+  { ssr: false }
+)
 
 export function ReportForm() {
   const [reportType, setReportType] = useState<"issue" | "review" | "">("")
