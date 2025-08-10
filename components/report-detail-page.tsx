@@ -34,7 +34,12 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { formatTimeToNow } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
-import { MapViewer } from "./MapViewer"
+import dynamic from "next/dynamic"
+
+const MapViewer = dynamic(
+  () => import("./MapViewer").then((mod) => mod.MapViewer),
+  { ssr: false }
+)
 
 interface ReportDetailPageProps {
   reportId: string
