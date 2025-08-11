@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MapPin } from "lucide-react"
@@ -9,6 +9,7 @@ import "leaflet/dist/leaflet.css"
 import pragueBoundary from "@/public/Praha.json"
 import { collection, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
+import type { MapFilterState, PriorityFilter, ReportTypeFilter, TimeRangeFilter } from "@/types/filters"
 
 // 🛠️ Фікс іконок для Leaflet у Next.js
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
@@ -24,20 +25,27 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow.src,
 })
 
-export function MapView() {
+type ReportMarker = {
+  id: string
+  title: string
+  description: string
+  coords: [number, number]
+  type?: "issue" | "review" | string
+  priority?: PriorityFilter | null
+  createdAtMs?: number | null
+}
+
+interface MapViewProps {
+  filters: MapFilterState
+}
+
+export function MapView({ filters }: MapViewProps) {
   const [zoom, setZoom] = useState(11)
   const [isMobile, setIsMobile] = useState(false)
   const [showOverlay, setShowOverlay] = useState(true)
   const mapRef = useRef<L.Map | null>(null)
 
-  const [mapMarkers, setMapMarkers] = useState<
-    {
-      id: string
-      title: string
-      description: string
-      coords: [number, number]
-    }[]
-  >([])
+  const [mapMarkers, setMapMarkers] = useState<ReportMarker[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -45,12 +53,7 @@ export function MapView() {
       setLoading(true)
       try {
         const querySnapshot = await getDocs(collection(db, "reports"))
-        const fetchedMarkers: {
-          id: string
-          title: string
-          description: string
-          coords: [number, number]
-        }[] = []
+        const fetchedMarkers: ReportMarker[] = []
         querySnapshot.forEach((doc) => {
           const data = doc.data()
           if (
@@ -58,11 +61,18 @@ export function MapView() {
             typeof data.locationCoords.lat === "number" &&
             typeof data.locationCoords.lng === "number"
           ) {
+            const createdAtMs =
+              data.createdAt && typeof data.createdAt.toDate === "function"
+                ? (data.createdAt.toDate() as Date).getTime()
+                : null
             fetchedMarkers.push({
               id: doc.id,
               title: data.title || "No Title",
               description: data.description || "No Description",
               coords: [data.locationCoords.lat, data.locationCoords.lng],
+              type: data.type,
+              priority: data.priority ?? null,
+              createdAtMs,
             })
           }
         })
@@ -137,12 +147,63 @@ export function MapView() {
     [-90, -180],
   ]
 
-  // 📍 Маркери в межах Праги
-  const markers = [
-    { position: [50.087, 14.4208], label: "Староміська площа" },
-    { position: [50.0755, 14.4378], label: "Вацлавська площа" },
-    { position: [50.0909, 14.3983], label: "Петршинський пагорб" },
-  ]
+  // Фільтрація маркерів
+  const filteredMarkers = useMemo(() => {
+    const { query, types, priorities, timeRanges } = filters
+
+    const normalizeTypeToFilter = (t?: string): ReportTypeFilter | undefined => {
+      if (!t) return undefined
+      if (t === "issue") return "issues"
+      if (t === "review") return "reviews"
+      if (t === "event" || t === "events") return "events"
+      return undefined
+    }
+
+    const matchesQuery = (title: string, description: string): boolean => {
+      if (!query) return true
+      const q = query.toLowerCase()
+      return title.toLowerCase().includes(q) || description.toLowerCase().includes(q)
+    }
+
+    const withinTimeRanges = (createdAtMs: number | null | undefined): boolean => {
+      if (!timeRanges || timeRanges.length === 0) return true
+      if (!createdAtMs) return false
+      const now = Date.now()
+      const startOfToday = new Date()
+      startOfToday.setHours(0, 0, 0, 0)
+      const msInDay = 24 * 60 * 60 * 1000
+      const ranges = timeRanges.map((r) => {
+        switch (r) {
+          case "today":
+            return createdAtMs >= startOfToday.getTime()
+          case "week":
+            return createdAtMs >= now - 7 * msInDay
+          case "month":
+            return createdAtMs >= now - 30 * msInDay
+          default:
+            return true
+        }
+      })
+      return ranges.some(Boolean)
+    }
+
+    return mapMarkers.filter((m) => {
+      if (!matchesQuery(m.title, m.description)) return false
+
+      if (types && types.length > 0) {
+        const mapped = normalizeTypeToFilter(m.type)
+        if (!mapped || !types.includes(mapped)) return false
+      }
+
+      if (priorities && priorities.length > 0) {
+        if (!m.priority || !priorities.includes(m.priority)) return false
+      }
+
+      if (!withinTimeRanges(m.createdAtMs)) return false
+
+      return true
+    })
+  }, [filters, mapMarkers])
 
   return (
     <Card className="h-[600px] relative overflow-hidden">
@@ -189,7 +250,7 @@ export function MapView() {
               </Marker>
             ))} */}
             <MarkerClusterGroup>
-              {mapMarkers.map((marker, idx) => (
+              {filteredMarkers.map((marker, idx) => (
                 <Marker key={`saved-${idx}`} position={marker.coords}>
                   <Popup>
                     <strong>{marker.title}</strong>
