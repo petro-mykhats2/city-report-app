@@ -16,7 +16,9 @@
         "map": "Mapa",
         "reports": "Co říkají obyvatelé",
         "report": "Odeslat hlášení",
-        "dashboard": "Panel"
+        "dashboard": "Panel",
+        "sheetTitle": "Mobilní navigace",
+        "sheetDescription": "Přístup k hlavním částem aplikace."
     },
     "signIn": "Přihlásit se",
     "form": {

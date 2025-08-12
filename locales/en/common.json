@@ -16,7 +16,9 @@
         "map": "Map",
         "reports": "Community Reports",
         "report": "New Report",
-        "dashboard": "Dashboard"
+        "dashboard": "Dashboard",
+        "sheetTitle": "Mobile Navigation",
+        "sheetDescription": "Access key sections of the application."
     },
     "signIn": "Sign In",
     "form": {
