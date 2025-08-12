@@ -122,5 +122,26 @@
             "resolved": "Вирішено",
             "inProgress": "У процесі"
         }
+    },
+    "mapFilters": {
+        "title": "Міська карта",
+        "filters": "Фільтри",
+        "active": "активно",
+        "clearAll": "Очистити все",
+        "searchLocation": "Пошук локації",
+        "searchPlaceholder": "Введіть адресу або орієнтир",
+        "reportTypes": "Типи звітів",
+        "cityIssues": "Проблеми міста",
+        "reviewsTips": "Відгуки та поради",
+        "communityEvents": "Громадські події",
+        "priorityLevel": "Рівень пріоритету",
+        "highPriority": "Високий пріоритет",
+        "mediumPriority": "Середній пріоритет",
+        "lowPriority": "Низький пріоритет",
+        "timePeriod": "Період часу",
+        "today": "Сьогодні",
+        "thisWeek": "Цього тижня",
+        "thisMonth": "Цього місяця",
+        "filtersLive": "Фільтри застосовуються миттєво"
     }
 }

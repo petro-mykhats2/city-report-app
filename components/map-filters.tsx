@@ -1,21 +1,19 @@
 "use client"
 
-import { useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { useTranslation } from "@/i18n"
 import {
   Search,
   Filter,
   AlertTriangle,
   Star,
   Calendar,
-  MapPin,
   Clock,
   Users,
   X,
@@ -41,6 +39,7 @@ interface MapFiltersProps {
 }
 
 export function MapFilters({ value, onChange }: MapFiltersProps) {
+  const { t } = useTranslation()
   const { query, types, priorities, timeRanges } = value
 
   const filterSections: {
@@ -49,60 +48,57 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
     filters: FilterItem[]
   }[] = [
     {
-      title: "Report Types",
+      title: t("mapFilters.reportTypes"),
       icon: Filter,
       filters: [
         {
           id: "issues",
-          label: "City Issues",
+          label: t("mapFilters.cityIssues"),
           icon: AlertTriangle,
           color: "text-red-500",
         },
         {
           id: "reviews",
-          label: "Reviews & Tips",
+          label: t("mapFilters.reviewsTips"),
           icon: Star,
           color: "text-green-500",
         },
         {
           id: "events",
-          label: "Community Events",
+          label: t("mapFilters.communityEvents"),
           icon: Users,
           color: "text-blue-500",
         },
       ],
     },
     {
-      title: "Priority Level",
+      title: t("mapFilters.priorityLevel"),
       icon: AlertTriangle,
       filters: [
         {
           id: "high",
-          label: "High Priority",
-          icon: undefined,
+          label: t("mapFilters.highPriority"),
           color: "text-red-600",
         },
         {
           id: "medium",
-          label: "Medium Priority",
-          icon: undefined,
+          label: t("mapFilters.mediumPriority"),
           color: "text-yellow-600",
         },
         {
           id: "low",
-          label: "Low Priority",
-          icon: undefined,
+          label: t("mapFilters.lowPriority"),
           color: "text-green-600",
         },
       ],
     },
     {
-      title: "Time Period",
+      title: t("mapFilters.timePeriod"),
       icon: Clock,
       filters: [
-        { id: "today", label: "Today", icon: Calendar },
-        { id: "week", label: "This Week", icon: Calendar },
-        { id: "month", label: "This Month", icon: Calendar },
+        { id: "today", label: t("mapFilters.today"), icon: Calendar },
+        { id: "week", label: t("mapFilters.thisWeek"), icon: Calendar },
+        { id: "month", label: t("mapFilters.thisMonth"), icon: Calendar },
       ],
     },
   ]
@@ -123,12 +119,13 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Filter className="h-5 w-5" />
-          Filters
+          {t("mapFilters.filters")}
         </CardTitle>
         {[...types, ...priorities, ...timeRanges].length > 0 && (
           <div className="flex items-center justify-between">
             <Badge variant="secondary" className="text-xs">
-              {[...types, ...priorities, ...timeRanges].length} active
+              {[...types, ...priorities, ...timeRanges].length}{" "}
+              {t("mapFilters.active")}
             </Badge>
             <Button
               variant="ghost"
@@ -136,23 +133,22 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
               onClick={clearAllFilters}
               className="h-6 px-2 text-xs"
             >
-              Clear all
+              {t("mapFilters.clearAll")}
             </Button>
           </div>
         )}
       </CardHeader>
-
       <CardContent className="space-y-6">
         {/* Search */}
         <div className="space-y-2">
           <Label className="text-sm font-medium flex items-center gap-2">
             <Search className="h-4 w-4" />
-            Search Location
+            {t("mapFilters.searchLocation")}
           </Label>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Enter address or landmark"
+              placeholder={t("mapFilters.searchPlaceholder")}
               className="pl-10 pr-10"
               value={query}
               onChange={(e) => onChange({ ...value, query: e.target.value })}
@@ -185,7 +181,7 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
                   key={filter.id}
                   className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
                   onClick={() => {
-                    if (section.title === "Report Types") {
+                    if (section.title === t("mapFilters.reportTypes")) {
                       onChange({
                         ...value,
                         types: toggleArrayValue(
@@ -193,7 +189,9 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
                           filter.id as ReportTypeFilter
                         ),
                       })
-                    } else if (section.title === "Priority Level") {
+                    } else if (
+                      section.title === t("mapFilters.priorityLevel")
+                    ) {
                       onChange({
                         ...value,
                         priorities: toggleArrayValue(
@@ -201,7 +199,7 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
                           filter.id as PriorityFilter
                         ),
                       })
-                    } else if (section.title === "Time Period") {
+                    } else if (section.title === t("mapFilters.timePeriod")) {
                       onChange({
                         ...value,
                         timeRanges: toggleArrayValue(
@@ -215,39 +213,12 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
                   <Checkbox
                     id={filter.id}
                     checked={
-                      section.title === "Report Types"
+                      section.title === t("mapFilters.reportTypes")
                         ? isTypeActive(filter.id as ReportTypeFilter)
-                        : section.title === "Priority Level"
+                        : section.title === t("mapFilters.priorityLevel")
                           ? isPriorityActive(filter.id as PriorityFilter)
                           : isTimeActive(filter.id as TimeRangeFilter)
                     }
-                    onChange={() => {
-                      if (section.title === "Report Types") {
-                        onChange({
-                          ...value,
-                          types: toggleArrayValue(
-                            types,
-                            filter.id as ReportTypeFilter
-                          ),
-                        })
-                      } else if (section.title === "Priority Level") {
-                        onChange({
-                          ...value,
-                          priorities: toggleArrayValue(
-                            priorities,
-                            filter.id as PriorityFilter
-                          ),
-                        })
-                      } else if (section.title === "Time Period") {
-                        onChange({
-                          ...value,
-                          timeRanges: toggleArrayValue(
-                            timeRanges,
-                            filter.id as TimeRangeFilter
-                          ),
-                        })
-                      }
-                    }}
                     className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                   />
                   <div className="flex items-center gap-2 flex-1">
@@ -275,7 +246,7 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
         {/* Apply Button (no-op, since filters are applied live) */}
         <Button className="w-full" size="lg" variant="secondary">
           <Filter className="h-4 w-4 mr-2" />
-          Filters are Live
+          {t("mapFilters.filtersLive")}
         </Button>
       </CardContent>
     </Card>

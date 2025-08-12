@@ -122,5 +122,26 @@
             "resolved": "Vyřešeno",
             "inProgress": "Probíhá"
         }
+    },
+    "mapFilters": {
+        "title": "Městská mapa",
+        "filters": "Filtry",
+        "active": "aktivní",
+        "clearAll": "Vymazat vše",
+        "searchLocation": "Hledat místo",
+        "searchPlaceholder": "Zadejte adresu nebo orientační bod",
+        "reportTypes": "Typy hlášení",
+        "cityIssues": "Problémy města",
+        "reviewsTips": "Recenze a tipy",
+        "communityEvents": "Komunitní akce",
+        "priorityLevel": "Úroveň priority",
+        "highPriority": "Vysoká priorita",
+        "mediumPriority": "Střední priorita",
+        "lowPriority": "Nízká priorita",
+        "timePeriod": "Časové období",
+        "today": "Dnes",
+        "thisWeek": "Tento týden",
+        "thisMonth": "Tento měsíc",
+        "filtersLive": "Filtry jsou aktivní"
     }
 }

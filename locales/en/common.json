@@ -122,5 +122,26 @@
             "resolved": "Resolved",
             "inProgress": "In Progress"
         }
+    },
+    "mapFilters": {
+        "title": "City Map",
+        "filters": "Filters",
+        "active": "active",
+        "clearAll": "Clear all",
+        "searchLocation": "Search Location",
+        "searchPlaceholder": "Enter address or landmark",
+        "reportTypes": "Report Types",
+        "cityIssues": "City Issues",
+        "reviewsTips": "Reviews & Tips",
+        "communityEvents": "Community Events",
+        "priorityLevel": "Priority Level",
+        "highPriority": "High Priority",
+        "mediumPriority": "Medium Priority",
+        "lowPriority": "Low Priority",
+        "timePeriod": "Time Period",
+        "today": "Today",
+        "thisWeek": "This Week",
+        "thisMonth": "This Month",
+        "filtersLive": "Filters are Live"
     }
 }
