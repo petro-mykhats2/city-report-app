@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import React, { memo, useEffect, useMemo, useRef, useState } from "react"
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MapPin } from "lucide-react"
@@ -20,7 +20,15 @@ import type {
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
 import markerIcon from "leaflet/dist/images/marker-icon.png"
 import markerShadow from "leaflet/dist/images/marker-shadow.png"
-import MarkerClusterGroup from "react-leaflet-markercluster"
+import dynamic from "next/dynamic"
+// Load marker clustering only on the client to avoid SSR issues
+type MarkerClusterGroupProps = React.PropsWithChildren<Record<string, unknown>>
+const MarkerClusterGroup = dynamic<MarkerClusterGroupProps>(
+  () => import("react-leaflet-markercluster") as unknown as Promise<
+    React.ComponentType<MarkerClusterGroupProps>
+  >,
+  { ssr: false }
+)
 import Link from "next/link"
 
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -40,6 +48,28 @@ type ReportMarker = {
   priority?: PriorityFilter | null
   createdAtMs?: number | null
 }
+
+// A memoized render-only layer for markers so map container doesn't remount
+const MarkerLayer: React.FC<{ markers: ReportMarker[] }> = memo(function MarkerLayer({
+  markers,
+}) {
+  return (
+    <MarkerClusterGroup>
+      {markers.map((marker) => (
+        <Marker key={marker.id} position={marker.coords}>
+          <Popup>
+            <strong>{marker.title}</strong>
+            <br />
+            {marker.description}
+            <Link href={`/reports/${marker.id}`} className="text-blue-500 underline">
+              Детальніше
+            </Link>
+          </Popup>
+        </Marker>
+      ))}
+    </MarkerClusterGroup>
+  )
+})
 
 interface MapViewProps {
   filters: MapFilterState
@@ -153,18 +183,24 @@ export function MapView({ filters }: MapViewProps) {
   }
 
   // ✅ Координати межі Праги (інверсія з GeoJSON)
-  const pragueCoords: [number, number][] =
-    pragueBoundary.features[0].geometry.coordinates[0].map(
-      ([lng, lat]: number[]) => [lat, lng]
-    )
+  const pragueCoords: [number, number][] = useMemo(
+    () =>
+      pragueBoundary.features[0].geometry.coordinates[0].map(
+        ([lng, lat]: number[]) => [lat, lng]
+      ),
+    []
+  )
 
   // 🟥 Маска навколо Праги
-  const outerBounds: [number, number][] = [
-    [90, -180],
-    [90, 180],
-    [-90, 180],
-    [-90, -180],
-  ]
+  const outerBounds: [number, number][] = useMemo(
+    () => [
+      [90, -180],
+      [90, 180],
+      [-90, 180],
+      [-90, -180],
+    ],
+    []
+  )
 
   // Фільтрація маркерів
   const filteredMarkers = useMemo(() => {
@@ -217,10 +253,7 @@ export function MapView({ filters }: MapViewProps) {
       return ranges.some(Boolean)
     }
 
-    console.log(
-      "DEBUG TYPES",
-      mapMarkers.map((m) => ({ id: m.id, type: m.type }))
-    )
+    console.log("DEBUG TYPES", mapMarkers.map((m) => ({ id: m.id, type: m.type })))
 
     return mapMarkers.filter((m) => {
       if (!matchesQuery(query, m.title, m.description, m.location)) return false
@@ -252,7 +285,7 @@ export function MapView({ filters }: MapViewProps) {
       <CardContent className="p-0 h-[500px] relative z-0">
         <div className="relative h-full w-full">
           <MapContainer
-            center={[50.0755, 14.4378]}
+            center={useMemo(() => [50.0755, 14.4378] as [number, number], [])}
             zoom={zoom}
             scrollWheelZoom={isMobile}
             dragging={!isMobile}
@@ -279,23 +312,7 @@ export function MapView({ filters }: MapViewProps) {
             />
 
             {/* 📍 Маркери */}
-            <MarkerClusterGroup>
-              {filteredMarkers.map((marker, idx) => (
-                <Marker key={`saved-${idx}`} position={marker.coords}>
-                  <Popup>
-                    <strong>{marker.title}</strong>
-                    <br />
-                    {marker.description}
-                    <Link
-                      href={`/reports/${marker.id}`}
-                      className="text-blue-500 underline"
-                    >
-                      Детальніше
-                    </Link>
-                  </Popup>
-                </Marker>
-              ))}
-            </MarkerClusterGroup>
+            <MarkerLayer markers={filteredMarkers} />
           </MapContainer>
 
           {/* 📱 Мобільна маска */}

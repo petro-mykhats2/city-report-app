@@ -4,18 +4,16 @@ import { MapFilters } from "@/components/map-filters"
 import { RecentReports } from "@/components/recent-reports"
 import { useTranslation } from "@/i18n"
 import dynamic from "next/dynamic"
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import type { MapFilterState } from "@/types/filters"
+
+// Declare dynamic import at module scope so the component identity is stable across renders
+const MapView = dynamic(() => import("@/components/map-view").then((mod) => mod.MapView), {
+  ssr: false,
+})
 
 export default function MapPage() {
   const { t } = useTranslation()
-
-  const MapView = dynamic(
-    () => import("@/components/map-view").then((mod) => mod.MapView),
-    {
-      ssr: false,
-    }
-  )
 
   const [filters, setFilters] = useState<MapFilterState>({
     types: [],
