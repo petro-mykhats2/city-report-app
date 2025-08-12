@@ -9,7 +9,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Search, Filter, AlertTriangle, Star, Calendar, MapPin, Clock, Users, X } from "lucide-react"
+import {
+  Search,
+  Filter,
+  AlertTriangle,
+  Star,
+  Calendar,
+  MapPin,
+  Clock,
+  Users,
+  X,
+} from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type {
   MapFilterState,
@@ -38,34 +48,64 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
     icon: LucideIcon
     filters: FilterItem[]
   }[] = [
-  {
-    title: "Report Types",
-    icon: Filter,
-    filters: [
-      { id: "issues", label: "City Issues", icon: AlertTriangle, color: "text-red-500" },
-      { id: "reviews", label: "Reviews & Tips", icon: Star, color: "text-green-500" },
-      { id: "events", label: "Community Events", icon: Users, color: "text-blue-500" },
-    ],
-  },
-  {
-    title: "Priority Level",
-    icon: AlertTriangle,
-    filters: [
-      { id: "high", label: "High Priority", icon: undefined, color: "text-red-600" },
-      { id: "medium", label: "Medium Priority", icon: undefined, color: "text-yellow-600" },
-      { id: "low", label: "Low Priority", icon: undefined, color: "text-green-600" },
-    ],
-  },
-  {
-    title: "Time Period",
-    icon: Clock,
-    filters: [
-      { id: "today", label: "Today", icon: Calendar },
-      { id: "week", label: "This Week", icon: Calendar },
-      { id: "month", label: "This Month", icon: Calendar },
-    ],
-  },
-]
+    {
+      title: "Report Types",
+      icon: Filter,
+      filters: [
+        {
+          id: "issues",
+          label: "City Issues",
+          icon: AlertTriangle,
+          color: "text-red-500",
+        },
+        {
+          id: "reviews",
+          label: "Reviews & Tips",
+          icon: Star,
+          color: "text-green-500",
+        },
+        {
+          id: "events",
+          label: "Community Events",
+          icon: Users,
+          color: "text-blue-500",
+        },
+      ],
+    },
+    {
+      title: "Priority Level",
+      icon: AlertTriangle,
+      filters: [
+        {
+          id: "high",
+          label: "High Priority",
+          icon: undefined,
+          color: "text-red-600",
+        },
+        {
+          id: "medium",
+          label: "Medium Priority",
+          icon: undefined,
+          color: "text-yellow-600",
+        },
+        {
+          id: "low",
+          label: "Low Priority",
+          icon: undefined,
+          color: "text-green-600",
+        },
+      ],
+    },
+    {
+      title: "Time Period",
+      icon: Clock,
+      filters: [
+        { id: "today", label: "Today", icon: Calendar },
+        { id: "week", label: "This Week", icon: Calendar },
+        { id: "month", label: "This Month", icon: Calendar },
+      ],
+    },
+  ]
 
   const clearAllFilters = () => {
     onChange({ types: [], priorities: [], timeRanges: [], query: "" })
@@ -90,7 +130,12 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
             <Badge variant="secondary" className="text-xs">
               {[...types, ...priorities, ...timeRanges].length} active
             </Badge>
-            <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-6 px-2 text-xs">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAllFilters}
+              className="h-6 px-2 text-xs"
+            >
               Clear all
             </Button>
           </div>
@@ -141,11 +186,29 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
                   className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
                   onClick={() => {
                     if (section.title === "Report Types") {
-                      onChange({ ...value, types: toggleArrayValue(types, filter.id as ReportTypeFilter) })
+                      onChange({
+                        ...value,
+                        types: toggleArrayValue(
+                          types,
+                          filter.id as ReportTypeFilter
+                        ),
+                      })
                     } else if (section.title === "Priority Level") {
-                      onChange({ ...value, priorities: toggleArrayValue(priorities, filter.id as PriorityFilter) })
+                      onChange({
+                        ...value,
+                        priorities: toggleArrayValue(
+                          priorities,
+                          filter.id as PriorityFilter
+                        ),
+                      })
                     } else if (section.title === "Time Period") {
-                      onChange({ ...value, timeRanges: toggleArrayValue(timeRanges, filter.id as TimeRangeFilter) })
+                      onChange({
+                        ...value,
+                        timeRanges: toggleArrayValue(
+                          timeRanges,
+                          filter.id as TimeRangeFilter
+                        ),
+                      })
                     }
                   }}
                 >
@@ -155,22 +218,44 @@ export function MapFilters({ value, onChange }: MapFiltersProps) {
                       section.title === "Report Types"
                         ? isTypeActive(filter.id as ReportTypeFilter)
                         : section.title === "Priority Level"
-                        ? isPriorityActive(filter.id as PriorityFilter)
-                        : isTimeActive(filter.id as TimeRangeFilter)
+                          ? isPriorityActive(filter.id as PriorityFilter)
+                          : isTimeActive(filter.id as TimeRangeFilter)
                     }
                     onChange={() => {
                       if (section.title === "Report Types") {
-                        onChange({ ...value, types: toggleArrayValue(types, filter.id as ReportTypeFilter) })
+                        onChange({
+                          ...value,
+                          types: toggleArrayValue(
+                            types,
+                            filter.id as ReportTypeFilter
+                          ),
+                        })
                       } else if (section.title === "Priority Level") {
-                        onChange({ ...value, priorities: toggleArrayValue(priorities, filter.id as PriorityFilter) })
+                        onChange({
+                          ...value,
+                          priorities: toggleArrayValue(
+                            priorities,
+                            filter.id as PriorityFilter
+                          ),
+                        })
                       } else if (section.title === "Time Period") {
-                        onChange({ ...value, timeRanges: toggleArrayValue(timeRanges, filter.id as TimeRangeFilter) })
+                        onChange({
+                          ...value,
+                          timeRanges: toggleArrayValue(
+                            timeRanges,
+                            filter.id as TimeRangeFilter
+                          ),
+                        })
                       }
                     }}
                     className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                   />
                   <div className="flex items-center gap-2 flex-1">
-                    {filter.icon && <filter.icon className={`h-4 w-4 ${filter.color || "text-muted-foreground"}`} />}
+                    {filter.icon && (
+                      <filter.icon
+                        className={`h-4 w-4 ${filter.color || "text-muted-foreground"}`}
+                      />
+                    )}
                     <Label
                       htmlFor={filter.id}
                       className="text-sm cursor-pointer group-hover:text-foreground transition-colors"

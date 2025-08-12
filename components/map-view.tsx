@@ -9,7 +9,12 @@ import "leaflet/dist/leaflet.css"
 import pragueBoundary from "@/public/Praha.json"
 import { collection, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import type { MapFilterState, PriorityFilter, ReportTypeFilter, TimeRangeFilter } from "@/types/filters"
+import type {
+  MapFilterState,
+  PriorityFilter,
+  ReportTypeFilter,
+  TimeRangeFilter,
+} from "@/types/filters"
 
 // 🛠️ Фікс іконок для Leaflet у Next.js
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
@@ -30,6 +35,7 @@ type ReportMarker = {
   title: string
   description: string
   coords: [number, number]
+  location?: string
   type?: "issue" | "review" | string
   priority?: PriorityFilter | null
   createdAtMs?: number | null
@@ -70,12 +76,25 @@ export function MapView({ filters }: MapViewProps) {
               title: data.title || "No Title",
               description: data.description || "No Description",
               coords: [data.locationCoords.lat, data.locationCoords.lng],
+              location: data.location || "",
               type: data.type,
               priority: data.priority ?? null,
               createdAtMs,
             })
           }
         })
+        console.log(
+          "DEBUG: fetchedMarkers",
+          fetchedMarkers.map((m) => ({
+            id: m.id,
+            type: m.type,
+            location: m.location,
+            title: m.title,
+            description: m.description,
+          }))
+        )
+        setMapMarkers(fetchedMarkers)
+
         setMapMarkers(fetchedMarkers)
       } catch (error) {
         console.error("Error fetching map markers:", error)
@@ -151,7 +170,9 @@ export function MapView({ filters }: MapViewProps) {
   const filteredMarkers = useMemo(() => {
     const { query, types, priorities, timeRanges } = filters
 
-    const normalizeTypeToFilter = (t?: string): ReportTypeFilter | undefined => {
+    const normalizeTypeToFilter = (
+      t?: string
+    ): ReportTypeFilter | undefined => {
       if (!t) return undefined
       if (t === "issue") return "issues"
       if (t === "review") return "reviews"
@@ -159,13 +180,22 @@ export function MapView({ filters }: MapViewProps) {
       return undefined
     }
 
-    const matchesQuery = (title: string, description: string): boolean => {
+    const matchesQuery = (
+      query: string,
+      title?: string,
+      description?: string,
+      location?: string
+    ): boolean => {
       if (!query) return true
       const q = query.toLowerCase()
-      return title.toLowerCase().includes(q) || description.toLowerCase().includes(q)
+      return [title, description, location]
+        .filter(Boolean) // прибираємо undefined/null
+        .some((field) => field!.toLowerCase().includes(q))
     }
 
-    const withinTimeRanges = (createdAtMs: number | null | undefined): boolean => {
+    const withinTimeRanges = (
+      createdAtMs: number | null | undefined
+    ): boolean => {
       if (!timeRanges || timeRanges.length === 0) return true
       if (!createdAtMs) return false
       const now = Date.now()
@@ -187,8 +217,13 @@ export function MapView({ filters }: MapViewProps) {
       return ranges.some(Boolean)
     }
 
+    console.log(
+      "DEBUG TYPES",
+      mapMarkers.map((m) => ({ id: m.id, type: m.type }))
+    )
+
     return mapMarkers.filter((m) => {
-      if (!matchesQuery(m.title, m.description)) return false
+      if (!matchesQuery(query, m.title, m.description, m.location)) return false
 
       if (types && types.length > 0) {
         const mapped = normalizeTypeToFilter(m.type)
@@ -244,11 +279,6 @@ export function MapView({ filters }: MapViewProps) {
             />
 
             {/* 📍 Маркери */}
-            {/* {markers.map((marker, idx) => (
-              <Marker key={idx} position={marker.position as [number, number]}>
-                <Popup>{marker.label}</Popup>
-              </Marker>
-            ))} */}
             <MarkerClusterGroup>
               {filteredMarkers.map((marker, idx) => (
                 <Marker key={`saved-${idx}`} position={marker.coords}>
