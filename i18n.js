@@ -11,14 +11,24 @@ import translationCs from "./locales/cs/common.json"
 
 // Initialize i18n once in a stable way
 if (!i18n.isInitialized) {
+  const storedLang =
+    typeof window !== "undefined" ? localStorage.getItem("lang") : null
+  const initialLang = storedLang || "cs"
+
+  if (typeof window !== "undefined" && !storedLang) {
+    try {
+      localStorage.setItem("lang", initialLang)
+    } catch {}
+  }
+
   i18n.use(initReactI18next).init({
     resources: {
       uk: { translation: translationUk },
       en: { translation: translationEn },
       cs: { translation: translationCs },
     },
-    lng: "en", // SSR and initial CSR use a stable default to avoid hydration mismatch
-    fallbackLng: "en",
+    lng: initialLang, // Use persisted language if available, otherwise Czech
+    fallbackLng: "cs",
     interpolation: { escapeValue: false },
   })
 }
