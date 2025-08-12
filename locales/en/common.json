@@ -143,5 +143,11 @@
         "thisWeek": "This Week",
         "thisMonth": "This Month",
         "filtersLive": "Filters are Live"
+    },
+    "interactiveCityMap": {
+        "scrollToView": "Scroll to view",
+        "tapToActivate": "(Tap to activate the map)",
+        "title": "Interactive City Map",
+        "moreDetails": "More details"
     }
 }

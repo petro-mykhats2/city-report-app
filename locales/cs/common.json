@@ -143,5 +143,11 @@
         "thisWeek": "Tento týden",
         "thisMonth": "Tento měsíc",
         "filtersLive": "Filtry jsou aktivní"
+    },
+    "interactiveCityMap": {
+        "scrollToView": "Posuňte pro zobrazení",
+        "tapToActivate": "(Klepněte pro aktivaci mapy)",
+        "title": "Interaktivní mapa města",
+        "moreDetails": "Více informací"
     }
 }

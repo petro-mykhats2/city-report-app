@@ -9,6 +9,7 @@ import "leaflet/dist/leaflet.css"
 import pragueBoundary from "@/public/Praha.json"
 import { collection, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase"
+import { useTranslation } from "@/i18n"
 import type {
   MapFilterState,
   PriorityFilter,
@@ -24,9 +25,10 @@ import dynamic from "next/dynamic"
 // Load marker clustering only on the client to avoid SSR issues
 type MarkerClusterGroupProps = React.PropsWithChildren<Record<string, unknown>>
 const MarkerClusterGroup = dynamic<MarkerClusterGroupProps>(
-  () => import("react-leaflet-markercluster") as unknown as Promise<
-    React.ComponentType<MarkerClusterGroupProps>
-  >,
+  () =>
+    import("react-leaflet-markercluster") as unknown as Promise<
+      React.ComponentType<MarkerClusterGroupProps>
+    >,
   { ssr: false }
 )
 import Link from "next/link"
@@ -50,26 +52,34 @@ type ReportMarker = {
 }
 
 // A memoized render-only layer for markers so map container doesn't remount
-const MarkerLayer: React.FC<{ markers: ReportMarker[] }> = memo(function MarkerLayer({
-  markers,
-}) {
-  return (
-    <MarkerClusterGroup>
-      {markers.map((marker) => (
-        <Marker key={marker.id} position={marker.coords}>
-          <Popup>
-            <strong>{marker.title}</strong>
-            <br />
-            {marker.description}
-            <Link href={`/reports/${marker.id}`} className="text-blue-500 underline">
-              Детальніше
-            </Link>
-          </Popup>
-        </Marker>
-      ))}
-    </MarkerClusterGroup>
-  )
-})
+const MarkerLayer: React.FC<{ markers: ReportMarker[]; t: any }> = memo(
+  function MarkerLayer({ markers, t }) {
+    return (
+      <MarkerClusterGroup>
+        {markers.map((marker) => (
+          <Marker key={marker.id} position={marker.coords}>
+            <Popup>
+              <div className="p-2 max-w-[200px]">
+                <h3 className="font-bold text-lg text-gray-800">
+                  {marker.title}
+                </h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  {marker.description}
+                </p>
+                <Link
+                  href={`/reports/${marker.id}`}
+                  className="text-blue-600 underline hover:text-blue-800"
+                >
+                  {t("interactiveCityMap.moreDetails")}
+                </Link>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MarkerClusterGroup>
+    )
+  }
+)
 
 interface MapViewProps {
   filters: MapFilterState
@@ -80,6 +90,7 @@ export function MapView({ filters }: MapViewProps) {
   const [isMobile, setIsMobile] = useState(false)
   const [showOverlay, setShowOverlay] = useState(true)
   const mapRef = useRef<L.Map | null>(null)
+  const { t } = useTranslation()
 
   const [mapMarkers, setMapMarkers] = useState<ReportMarker[]>([])
   const [loading, setLoading] = useState(true)
@@ -253,7 +264,10 @@ export function MapView({ filters }: MapViewProps) {
       return ranges.some(Boolean)
     }
 
-    console.log("DEBUG TYPES", mapMarkers.map((m) => ({ id: m.id, type: m.type })))
+    console.log(
+      "DEBUG TYPES",
+      mapMarkers.map((m) => ({ id: m.id, type: m.type }))
+    )
 
     return mapMarkers.filter((m) => {
       if (!matchesQuery(query, m.title, m.description, m.location)) return false
@@ -278,7 +292,7 @@ export function MapView({ filters }: MapViewProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5" />
-          Interactive City Map
+          {t("interactiveCityMap.title")}
         </CardTitle>
       </CardHeader>
 
@@ -312,7 +326,7 @@ export function MapView({ filters }: MapViewProps) {
             />
 
             {/* 📍 Маркери */}
-            <MarkerLayer markers={filteredMarkers} />
+            <MarkerLayer markers={filteredMarkers} t={t} />
           </MapContainer>
 
           {/* 📱 Мобільна маска */}
@@ -322,8 +336,10 @@ export function MapView({ filters }: MapViewProps) {
               className="absolute inset-0 z-[10] bg-black bg-opacity-70 flex flex-col items-center justify-center text-white px-4 text-center"
             >
               <div className="animate-bounce text-3xl mb-2">⬆️⬇️</div>
-              <p className="text-sm">Гортайте для перегляду</p>
-              <p className="text-xs mt-1">(Торкніться, щоб активувати карту)</p>
+              <p className="text-sm">{t("interactiveCityMap.scrollToView")}</p>
+              <p className="text-xs mt-1">
+                {t("interactiveCityMap.tapToActivate")}
+              </p>
             </div>
           )}
         </div>
