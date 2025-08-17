@@ -16,7 +16,9 @@
         "map": "Map",
         "reports": "Community Reports",
         "report": "New Report",
-        "dashboard": "Dashboard"
+        "dashboard": "Dashboard",
+        "sheetTitle": "Mobile Navigation",
+        "sheetDescription": "Access key sections of the application."
     },
     "signIn": "Sign In",
     "form": {
@@ -122,5 +124,106 @@
             "resolved": "Resolved",
             "inProgress": "In Progress"
         }
+    },
+    "mapFilters": {
+        "title": "City Map",
+        "filters": "Filters",
+        "active": "active",
+        "clearAll": "Clear all",
+        "searchLocation": "Search Location",
+        "searchPlaceholder": "Address or landmark",
+        "reportTypes": "Report Types",
+        "cityIssues": "City Issues",
+        "reviewsTips": "Reviews & Tips",
+        "communityEvents": "Community Events",
+        "priorityLevel": "Priority Level",
+        "highPriority": "High Priority",
+        "mediumPriority": "Medium Priority",
+        "lowPriority": "Low Priority",
+        "timePeriod": "Time Period",
+        "today": "Today",
+        "thisWeek": "This Week",
+        "thisMonth": "This Month",
+        "filtersLive": "Filters are Live"
+    },
+    "interactiveCityMap": {
+        "scrollToView": "Scroll to view",
+        "tapToActivate": "(Tap to activate the map)",
+        "title": "Interactive City Map",
+        "moreDetails": "More details"
+    },
+    "features": {
+        "sectionTitle": "Everything you need to improve your city",
+        "sectionDescription": "Powerful features designed to make reporting city issues simple, efficient, and engaging",
+        "items": [
+            {
+                "title": "Smart Search",
+                "description": "Quickly find places and issues with our intelligent search system",
+                "badge": "Enhanced"
+            },
+            {
+                "title": "Interactive Map",
+                "description": "Explore your city with dynamic markers for reports and reviews",
+                "badge": "Live"
+            },
+            {
+                "title": "Photo Uploads",
+                "description": "Add visual context to your reports with photos",
+                "badge": "Visual"
+            },
+            {
+                "title": "Rating System",
+                "description": "Rate and review local places to help others make informed decisions",
+                "badge": "Community"
+            },
+            {
+                "title": "Issue Reporting",
+                "description": "Report problems like potholes, damaged infrastructure, and more",
+                "badge": "Civic"
+            },
+            {
+                "title": "User Profiles",
+                "description": "Track your contributions and build your community reputation",
+                "badge": "Personal"
+            },
+            {
+                "title": "Real-Time Updates",
+                "description": "Get notified when issues you reported are resolved or updated",
+                "badge": "Instant"
+            },
+            {
+                "title": "Secure & Private",
+                "description": "Your data is protected with enterprise-grade security measures",
+                "badge": "Protected"
+            }
+        ]
+    },
+    "stats": {
+        "sectionTitle": "Making a Real Impact",
+        "sectionDescription": "Join thousands of citizens working together to improve urban life",
+        "items": [
+            {
+                "number": "12,500+",
+                "label": "Reports Submitted"
+            },
+            {
+                "number": "8,200+",
+                "label": "Issues Resolved"
+            },
+            {
+                "number": "25,000+",
+                "label": "Community Members"
+            },
+            {
+                "number": "150+",
+                "label": "Cities Covered"
+            }
+        ]
+    },
+    "cta": {
+        "title": "Ready to Make a Difference?",
+        "description": "Join our community of engaged citizens and help create positive change in your city",
+        "getStarted": "Get Started",
+        "exploreMap": "Explore Map"
     }
 }
