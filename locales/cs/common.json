@@ -197,5 +197,33 @@
                 "badge": "Chráněno"
             }
         ]
+    },
+    "stats": {
+        "sectionTitle": "Skutečný Dopad",
+        "sectionDescription": "Připojte se k tisícům občanů, kteří společně zlepšují městský život",
+        "items": [
+            {
+                "number": "12 500+",
+                "label": "Podaných hlášení"
+            },
+            {
+                "number": "8 200+",
+                "label": "Vyřešených problémů"
+            },
+            {
+                "number": "25 000+",
+                "label": "Členů komunity"
+            },
+            {
+                "number": "150+",
+                "label": "Pokrytých měst"
+            }
+        ]
+    },
+    "cta": {
+        "title": "Připraveni udělat změnu?",
+        "description": "Připojte se k naší komunitě aktivních občanů a pomozte vytvářet pozitivní změny ve vašem městě",
+        "getStarted": "Začít",
+        "exploreMap": "Prozkoumat mapu"
     }
 }

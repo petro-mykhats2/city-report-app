@@ -197,5 +197,33 @@
                 "badge": "Protected"
             }
         ]
+    },
+    "stats": {
+        "sectionTitle": "Making a Real Impact",
+        "sectionDescription": "Join thousands of citizens working together to improve urban life",
+        "items": [
+            {
+                "number": "12,500+",
+                "label": "Reports Submitted"
+            },
+            {
+                "number": "8,200+",
+                "label": "Issues Resolved"
+            },
+            {
+                "number": "25,000+",
+                "label": "Community Members"
+            },
+            {
+                "number": "150+",
+                "label": "Cities Covered"
+            }
+        ]
+    },
+    "cta": {
+        "title": "Ready to Make a Difference?",
+        "description": "Join our community of engaged citizens and help create positive change in your city",
+        "getStarted": "Get Started",
+        "exploreMap": "Explore Map"
     }
 }
