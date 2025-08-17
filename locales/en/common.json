@@ -151,5 +151,51 @@
         "tapToActivate": "(Tap to activate the map)",
         "title": "Interactive City Map",
         "moreDetails": "More details"
+    },
+    "features": {
+        "sectionTitle": "Everything you need to improve your city",
+        "sectionDescription": "Powerful features designed to make reporting city issues simple, efficient, and engaging",
+        "items": [
+            {
+                "title": "Smart Search",
+                "description": "Quickly find places and issues with our intelligent search system",
+                "badge": "Enhanced"
+            },
+            {
+                "title": "Interactive Map",
+                "description": "Explore your city with dynamic markers for reports and reviews",
+                "badge": "Live"
+            },
+            {
+                "title": "Photo Uploads",
+                "description": "Add visual context to your reports with photos",
+                "badge": "Visual"
+            },
+            {
+                "title": "Rating System",
+                "description": "Rate and review local places to help others make informed decisions",
+                "badge": "Community"
+            },
+            {
+                "title": "Issue Reporting",
+                "description": "Report problems like potholes, damaged infrastructure, and more",
+                "badge": "Civic"
+            },
+            {
+                "title": "User Profiles",
+                "description": "Track your contributions and build your community reputation",
+                "badge": "Personal"
+            },
+            {
+                "title": "Real-Time Updates",
+                "description": "Get notified when issues you reported are resolved or updated",
+                "badge": "Instant"
+            },
+            {
+                "title": "Secure & Private",
+                "description": "Your data is protected with enterprise-grade security measures",
+                "badge": "Protected"
+            }
+        ]
     }
 }

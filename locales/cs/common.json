@@ -151,5 +151,51 @@
         "tapToActivate": "(Klepněte pro aktivaci mapy)",
         "title": "Interaktivní mapa města",
         "moreDetails": "Více informací"
+    },
+    "features": {
+        "sectionTitle": "Vše, co potřebujete k vylepšení svého města",
+        "sectionDescription": "Výkonné funkce navržené tak, aby bylo hlášení městských problémů jednoduché, efektivní a poutavé",
+        "items": [
+            {
+                "title": "Chytré vyhledávání",
+                "description": "Rychle najděte místa a problémy pomocí našeho inteligentního vyhledávacího systému",
+                "badge": "Vylepšeno"
+            },
+            {
+                "title": "Interaktivní mapa",
+                "description": "Prozkoumejte své město s dynamickými značkami pro hlášení a recenze",
+                "badge": "Živě"
+            },
+            {
+                "title": "Nahrávání fotografií",
+                "description": "Přidejte vizuální kontext ke svým hlášením pomocí fotografií",
+                "badge": "Vizuální"
+            },
+            {
+                "title": "Systém hodnocení",
+                "description": "Hodnoťte a recenzujte místní místa, aby ostatní mohli činit informovaná rozhodnutí",
+                "badge": "Komunita"
+            },
+            {
+                "title": "Hlášení problémů",
+                "description": "Nahlašujte problémy jako výtluky, poškozenou infrastrukturu a další",
+                "badge": "Občanské"
+            },
+            {
+                "title": "Uživatelské profily",
+                "description": "Sledujte své příspěvky a budujte svou komunitní reputaci",
+                "badge": "Osobní"
+            },
+            {
+                "title": "Aktualizace v reálném čase",
+                "description": "Dostávejte upozornění, když jsou problémy, které jste nahlásili, vyřešeny nebo aktualizovány",
+                "badge": "Okamžitě"
+            },
+            {
+                "title": "Bezpečné a soukromé",
+                "description": "Vaše data jsou chráněna bezpečnostními opatřeními na podnikové úrovni",
+                "badge": "Chráněno"
+            }
+        ]
     }
 }
